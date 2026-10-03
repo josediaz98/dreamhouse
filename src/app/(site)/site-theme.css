@@ -73,7 +73,27 @@
   }
 }
 
+/* Onboarding modal: backdrop fades, dialog rises, each step slides in. */
+@keyframes backdrop-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+.modal-backdrop { animation: backdrop-in 0.2s ease-out 1; }
+
+@keyframes modal-in {
+  from { opacity: 0; transform: translateY(8px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.modal-in { animation: modal-in 0.26s var(--ease-out-quint) 1; }
+
+@keyframes step-in {
+  from { opacity: 0; transform: translateX(8px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+.step-in { animation: step-in 0.22s var(--ease-out-quint) 1; }
+
 @media (prefers-reduced-motion: reduce) {
-  .row-flash, .question-in, .dot-running, .popover-in, .expand-in, .hero-kenburns { animation: none; }
+  .row-flash, .question-in, .dot-running, .popover-in, .expand-in, .hero-kenburns,
+  .modal-backdrop, .modal-in, .step-in { animation: none; }
   .hero-kenburns { transform: none; will-change: auto; }
 }

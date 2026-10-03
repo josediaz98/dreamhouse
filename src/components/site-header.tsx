@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ConnectAgent } from "@/components/connect-agent";
+import { TourLink } from "@/components/onboarding-modal";
 
 export function SiteHeader() {
   return (
@@ -17,13 +18,15 @@ export function SiteHeader() {
             className="h-6 w-auto sm:h-7"
           />
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-1 whitespace-nowrap text-sm sm:gap-3">
+        <nav aria-label="Primary" className="flex items-center gap-0.5 whitespace-nowrap text-sm sm:gap-3">
           <Link
             href="/seller"
-            className="inline-flex min-h-11 items-center rounded-md px-2 text-muted transition-colors duration-150 hover:text-fg sm:min-h-9 sm:px-3"
+            className="inline-flex min-h-11 items-center rounded-md px-1.5 text-muted transition-colors duration-150 hover:text-fg sm:min-h-9 sm:px-3"
           >
-            Seller console
+            <span className="sm:hidden">Seller</span>
+            <span className="max-sm:hidden">Seller console</span>
           </Link>
+          <TourLink className="inline-flex min-h-11 items-center rounded-md px-1.5 text-muted transition-colors duration-150 hover:text-fg sm:min-h-9 sm:px-3" />
           <ConnectAgent />
         </nav>
       </div>

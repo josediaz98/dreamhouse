@@ -3,6 +3,9 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { CopyButton } from "@/components/copy-button";
 
+/** Mirrors CONNECT_EVENT in onboarding-modal.tsx; kept local so this file has no new imports cycle. */
+const CONNECT_EVENT = "lotline:connect";
+
 const MCP_URL = "https://dreamhouse-chi.vercel.app/mcp";
 
 type ConnectTab = "claude" | "curl" | "mcp";
@@ -43,6 +46,16 @@ export function ConnectAgent() {
   const root = useRef<HTMLDivElement>(null);
   const button = useRef<HTMLButtonElement>(null);
   const panelId = useId();
+
+  // The onboarding tour can open this popover (window event; no writes).
+  useEffect(() => {
+    function onConnect() {
+      setOpen(true);
+      button.current?.focus();
+    }
+    window.addEventListener(CONNECT_EVENT, onConnect);
+    return () => window.removeEventListener(CONNECT_EVENT, onConnect);
+  }, []);
 
   useEffect(() => {
     if (!open) return;

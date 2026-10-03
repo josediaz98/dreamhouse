@@ -1,16 +1,20 @@
 "use client";
 
-import { useEffect, useState, type ReactNode } from "react";
+import { useEffect, useState } from "react";
 import type { HouseProgram } from "@/lib/contract";
 import { searchProperties } from "@/lib/client/api";
 import { DEFAULT_PROGRAM } from "@/lib/client/types";
 import { matchLot, useLotCheck } from "@/lib/client/use-lot-check";
 import { useLots } from "@/lib/client/use-lots";
-import { BeforeAfter } from "@/components/before-after";
 import { CommandBox, type CommandMode, type SearchQuery } from "@/components/command-box";
 import { Hero } from "@/components/hero";
 import { LotResults, type ResultsCard, type ResultsStatus } from "@/components/lot-results";
-import { ParcelSheet } from "@/components/parcel-sheet";
+import {
+  CONNECT_EVENT,
+  OnboardingModal,
+  TOUR_EVENT,
+  TOUR_STORAGE_KEY,
+} from "@/components/onboarding-modal";
 
 const DEFAULT_QUERY = {
   program: DEFAULT_PROGRAM,
@@ -37,62 +41,6 @@ function sameQuery(a: SearchQuery, b: SearchQuery): boolean {
   return a.maxPriceUsd === b.maxPriceUsd && sameProgram(a.program, b.program);
 }
 
-function Section({
-  index,
-  title,
-  children,
-}: {
-  readonly index: string;
-  readonly title: string;
-  readonly children: ReactNode;
-}) {
-  return (
-    <section className="border-t border-line py-16 sm:py-24">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 sm:px-6">
-        <div className="flex flex-col gap-3">
-          <p className="font-mono text-xs tabular-nums text-faint">{index}</p>
-          <h2 className="max-w-3xl text-3xl text-fg sm:text-4xl">{title}</h2>
-        </div>
-        {children}
-      </div>
-    </section>
-  );
-}
-
-const STEPS = [
-  {
-    name: "Ingest",
-    text: "Claude extracts each listing into typed fields, and every field keeps its source and page.",
-  },
-  {
-    name: "Decide",
-    text: "Deterministic rules from the Design Manual and county GIS return pass, fail or unknown. The model never decides.",
-  },
-  {
-    name: "Ask",
-    text: "Each unknown becomes a question to the seller, and the answer updates the verdict live.",
-  },
-] as const;
-
-function HowItWorks() {
-  return (
-    <ol className="grid gap-px overflow-hidden rounded-lg border border-line bg-line md:grid-cols-3">
-      {STEPS.map((step, i) => (
-        <li key={step.name} className="flex flex-col gap-3 bg-surface p-6 sm:p-8">
-          <span className="flex items-center gap-3 font-mono text-xs text-faint">
-            <span className="tabular-nums">{String(i + 1).padStart(2, "0")}</span>
-            {i < STEPS.length - 1 ? (
-              <span aria-hidden className="h-px flex-1 border-t border-dashed border-line-strong" />
-            ) : null}
-          </span>
-          <h3 className="text-2xl text-fg">{step.name}</h3>
-          <p className="text-sm text-muted">{step.text}</p>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
 export function Landing() {
   const [draft, setDraft] = useState<SearchQuery>(DEFAULT_QUERY);
   const [active, setActive] = useState<SearchQuery>(DEFAULT_QUERY);
@@ -109,6 +57,55 @@ export function Landing() {
   const [checkProgram, setCheckProgram] = useState<HouseProgram>(DEFAULT_PROGRAM);
   const [lotCount, setLotCount] = useState<number | null>(null);
   const [scrollTarget, setScrollTarget] = useState<ScrollTarget | null>(null);
+  const [tourOpen, setTourOpen] = useState(false);
+
+  // First visit per browser opens the tour. ?tour=0 never opens it, ?tour=1 always does.
+  // If storage throws (private mode), it opens once per page load. Local only, no API writes.
+  useEffect(() => {
+    const param = new URLSearchParams(window.location.search).get("tour");
+    if (param === "0") return;
+    let show = param === "1";
+    if (!show) {
+      try {
+        show = window.localStorage.getItem(TOUR_STORAGE_KEY) === null;
+        window.localStorage.setItem(TOUR_STORAGE_KEY, "seen");
+      } catch {
+        show = true;
+      }
+    }
+    if (!show) return;
+    const frame = window.requestAnimationFrame(() => setTourOpen(true));
+    return () => window.cancelAnimationFrame(frame);
+  }, []);
+
+  // The header "How it works" link reopens the tour at step 1.
+  useEffect(() => {
+    function onTour() {
+      setTourOpen(true);
+    }
+    window.addEventListener(TOUR_EVENT, onTour);
+    return () => window.removeEventListener(TOUR_EVENT, onTour);
+  }, []);
+
+  function closeTour(returnFocus = true) {
+    setTourOpen(false);
+    if (!returnFocus) return;
+    window.requestAnimationFrame(() => {
+      document.querySelector<HTMLElement>('#command-box button[type="submit"]')?.focus({ preventScroll: true });
+    });
+  }
+
+  function searchFromTour() {
+    closeTour(false);
+    setMode("search");
+    setDraft(DEFAULT_QUERY);
+    runSearch(DEFAULT_QUERY);
+  }
+
+  function connectFromTour() {
+    closeTour(false);
+    window.requestAnimationFrame(() => window.dispatchEvent(new CustomEvent(CONNECT_EVENT)));
+  }
 
   // Read-only: the indexed lot count for the hero chip. No program, no budget, no writes.
   useEffect(() => {
@@ -214,31 +211,29 @@ export function Landing() {
     eliminatedCount = lotsState.eliminatedCount;
   }
 
-  const openQuestions = new Set(
-    lotsState.lots.flatMap(({ result }) => result?.openQuestionIds ?? []),
-  ).size;
-
   const busy =
     (shown === "search" && status === "loading") || (shown === "check" && check.phase === "running");
 
   return (
     <>
       <Hero lotCount={lotCount}>
-        <CommandBox
-          mode={mode}
-          onModeChange={setMode}
-          query={draft}
-          onQueryChange={setDraft}
-          lotQuery={lotQuery}
-          onLotQueryChange={setLotQuery}
-          presets={presets}
-          onPreset={(lot) => {
-            setLotQuery(lot.item.property.address);
-            runCheck(lot.item.property.address);
-          }}
-          onSubmit={submit}
-          busy={busy}
-        />
+        <div id="command-box" className="flex w-full justify-center">
+          <CommandBox
+            mode={mode}
+            onModeChange={setMode}
+            query={draft}
+            onQueryChange={setDraft}
+            lotQuery={lotQuery}
+            onLotQueryChange={setLotQuery}
+            presets={presets}
+            onPreset={(lot) => {
+              setLotQuery(lot.item.property.address);
+              runCheck(lot.item.property.address);
+            }}
+            onSubmit={submit}
+            busy={busy}
+          />
+        </div>
       </Hero>
 
       {shown !== "none" ? (
@@ -275,25 +270,22 @@ export function Landing() {
               }
               budget={active.maxPriceUsd}
               onRemoveBudget={removeBudget}
+              map={lotsState}
+              onMapSelect={showLot}
             />
           </div>
         </section>
       ) : null}
 
-      <Section index="01" title="How it works">
-        <HowItWorks />
-      </Section>
-
-      <Section index="02" title="Where the facts stop, the line is dashed.">
-        <ParcelSheet state={lotsState} selectedId={openId} onSelect={showLot} />
-      </Section>
-
-      <Section index="03" title="“I don’t know” vs a sourced answer">
-        <BeforeAfter
-          eliminatedCount={lotsState.status === "ready" && lotsState.lots.length > 0 ? lotsState.eliminatedCount : null}
-          openQuestions={lotsState.status === "ready" && lotsState.lots.length > 0 ? openQuestions : null}
+      {tourOpen ? (
+        <OnboardingModal
+          open
+          lotCount={lotCount}
+          onClose={() => closeTour()}
+          onSearch={searchFromTour}
+          onConnect={connectFromTour}
         />
-      </Section>
+      ) : null}
     </>
   );
 }
