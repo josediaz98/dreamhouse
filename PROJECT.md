@@ -220,6 +220,7 @@ Prefer a screen recording of the deployed URL over local. Record a backup take.
 | — | Market: The Sea Ranch, CA | Scored 20/25 vs OBX 19 and 30A 18; strongest pain (design review takes 1–2 years, per a press article) and extractable rules |
 | — | Verdicts are deterministic; LLM only extracts and explains | A wrong pass on a $300k+ lot destroys trust; also makes the demo reproducible |
 | 12:50 | `ANTHROPIC_API_KEY` only in Vercel Development (Jose's call, to keep it simple) | Extraction and the buyer agent run locally; the deployed site cannot call Claude. Record the video from the local app, or add the Production var later with `vercel env add ANTHROPIC_API_KEY production` |
+| 13:05 | Stripe: MPP settlement dropped. Sandbox profile needs a live profile, which needs account activation (SSN); Jose has none | Keep the 402 challenge (paywall off without keys). New Stripe element: Billing meter `lotline_tool_call` (`mtr_test_61VVwv0SLXtn8OQuE41EeUE11jyNc6hU`), test customer `cus_VNJaiuXkhonZbE`, metered $0.50 price; one meter event verified on the upcoming invoice. Env: `STRIPE_METER_CUSTOMER_ID` in Vercel Development; `STRIPE_SECRET_KEY` (sandbox) still to be added by Jose, Development only. Do not add Stripe keys to Production |
 | — | Demo on hand-snapshotted listings, not live scraping | Zillow, LandWatch and homes.com block bots and prohibit scraping |
 
 ## 11. Risks
