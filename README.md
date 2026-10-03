@@ -16,10 +16,10 @@ claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp
 
 For agents: [`/llms.txt`](https://dreamhouse-chi.vercel.app/llms.txt) describes the tools, inputs, pricing and limits in plain text.
 
-| | |
+| | | |
 |---|---|
-| ![Landing](docs/submission/images/01-hero.png) | ![Results](docs/submission/images/02-results.png) |
-| ![Checks for one lot](docs/submission/images/03-timber-ridge-checks.png) | ![Without and with Lotline](docs/submission/images/08-before-after.png) |
+| ![Onboarding](docs/submission/images/01-onboarding-step1.png) | ![Results](docs/submission/images/04-results.png) |
+| ![Checks for one lot](docs/submission/images/05-timber-ridge-checks.png) | ![Seller console](docs/submission/images/08-seller-after-answers.png) |
 
 ## The problem
 
