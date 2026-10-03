@@ -11,7 +11,7 @@ Stored state after `ingest.ts`: 6 lots, none eliminated, every lot overall `unkn
 | 74 Burl Tree | `5955e813-1918-401e-867e-4d46c8ad5e61` | west | B: unknown -> 2 answers -> pass |
 | 35604 Timber Ridge Road | `9d1adcd4-e664-4d4b-aa2d-d8328072c61f` | east | C: stays unknown, open questions |
 
-Other lots: Fly Cloud `cb24261a-6334-4000-81ee-f99fb9df163c`, Highway 1 `a5ddf92f-dcb2-4e8e-a48f-eeb1d04ce646`, Foothill Close `ffe90278-…` (resolve with `search_properties`).
+Other lots: Fly Cloud `cb24261a-6334-4000-81ee-f99fb9df163c`, Highway 1 `a5ddf92f-dcb2-4e8e-a48f-eeb1d04ce646`, Foothill Close `ffe90278-3d7d-4306-a261-274165e3faf3`.
 
 ## Why no lot fails in the stored state
 
