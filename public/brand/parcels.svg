@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 1000" width="1600" height="1000" role="img" aria-label="Parcel outlines of the demo lots at one common scale. Two lots have no resolved parcel and are drawn dashed.">
+<rect width="1600" height="1000" fill="#0d0f0e"/>
+<g font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2" letter-spacing="1.5"><text x="55" y="64">PARCEL SHEET · THE SEA RANCH, CA</text></g>
+<text x="55" y="122" font-family="'Fraunces', Georgia, 'Times New Roman', serif" font-size="46" fill="#ecebe4">Where the facts stop, the line is dashed.</text>
+<g>
+<rect x="55" y="170" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<path d="M341.3 292.7L333.6 300.0L332.2 301.3L272.7 357.9L228.7 306.3L271.6 261.7L271.9 261.4L280.8 252.1L341.3 292.7Z" fill="#ecebe4" fill-opacity="0.06" stroke="#ecebe4" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="69" y="440" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">APN 155-260-015 · 0.51 ac</text>
+<text x="69" y="458" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">35411 Fly Cloud Rd</text>
+</g>
+<g>
+<rect x="570" y="170" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<path d="M855.3 288.5L778.4 347.0L772.9 351.3L764.6 357.6L759.8 346.6L748.4 320.6L744.7 312.2L752.1 306.8L826.5 252.4L855.3 288.5Z" fill="#ecebe4" fill-opacity="0.06" stroke="#ecebe4" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="584" y="440" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">APN 155-260-003 · 0.45 ac</text>
+<text x="584" y="458" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">35604 Timber Ridge Rd</text>
+</g>
+<g>
+<rect x="1085" y="170" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<path d="M1454.3 300.7L1326.6 380.2L1273.1 399.8L1272.5 400.0L1272.0 398.7L1256.0 357.7L1212.6 247.2L1206.0 239.6L1176.4 210.7L1175.7 210.0L1204.1 217.6L1254.8 230.1L1328.6 245.0L1454.3 300.7Z" fill="#ecebe4" fill-opacity="0.06" stroke="#ecebe4" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="1099" y="440" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">APN 122-190-031 · 2.23 ac</text>
+<text x="1099" y="458" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">35995 Highway 1</text>
+</g>
+<g>
+<rect x="55" y="530" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<path d="M316.9 621.3L293.1 718.5L261.4 710.9L253.1 708.9L276.8 611.5L285.6 613.6L316.9 621.3Z" fill="#ecebe4" fill-opacity="0.06" stroke="#ecebe4" stroke-width="1.6" stroke-linejoin="round"/>
+<text x="69" y="800" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">APN 156-270-012 · 0.39 ac</text>
+<text x="69" y="818" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">39463 Leeward Rd</text>
+</g>
+<g>
+<rect x="570" y="530" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<rect x="715" y="610" width="170" height="110" fill="none" stroke="#d8a24a" stroke-width="1.6" stroke-dasharray="7 6"/>
+<text x="800" y="671" text-anchor="middle" font-family="'Fraunces', Georgia, 'Times New Roman', serif" font-size="30" fill="#d8a24a">?</text>
+<text x="584" y="800" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">parcel not resolved · not to scale</text>
+<text x="584" y="818" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">74 Burl Tree</text>
+</g>
+<g>
+<rect x="1085" y="530" width="460" height="300" fill="#131614" stroke="#2a302c"/>
+<rect x="1230" y="610" width="170" height="110" fill="none" stroke="#d8a24a" stroke-width="1.6" stroke-dasharray="7 6"/>
+<text x="1315" y="671" text-anchor="middle" font-family="'Fraunces', Georgia, 'Times New Roman', serif" font-size="30" fill="#d8a24a">?</text>
+<text x="1099" y="800" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">parcel not resolved · not to scale</text>
+<text x="1099" y="818" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="13" fill="#ecebe4">38065 Foothill Close</text>
+</g>
+
+<g font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="12" fill="#a3aaa2">
+  <line x1="1420.561769494966" y1="938" x2="1520" y2="938" stroke="#ecebe4" stroke-width="2"/>
+  <line x1="1420.561769494966" y1="933" x2="1420.561769494966" y2="943" stroke="#ecebe4"/>
+  <line x1="1520" y1="933" x2="1520" y2="943" stroke="#ecebe4"/>
+  <text x="1420.561769494966" y="960">0</text><text x="1520" y="960" text-anchor="end">200 ft</text>
+  <path d="M1546 904 L1554 930 L1546 924 L1538 930 Z" fill="#ecebe4"/>
+  <text x="1546" y="898" text-anchor="middle" fill="#ecebe4">N</text>
+</g>
+<text x="55" y="972" font-family="ui-monospace, 'IBM Plex Mono', Menlo, monospace" font-size="11" fill="#a3aaa2">Outlines: Sonoma County CDR_Parcels, drawn at one common scale. Planning purposes only, not parcel-specific decisions. Dashed = parcel not resolved.</text>
+</svg>
