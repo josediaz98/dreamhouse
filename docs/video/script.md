@@ -8,7 +8,7 @@ Every number on screen and in the voice-over comes from the real database, never
 
 | Placeholder | Meaning | Source |
 |---|---|---|
-| `{PRODUCT}` | Product name | Jose's pick, `docs/brand.md` |
+| `Lotline` | Product name | Jose's pick, `docs/brand.md` |
 | `{N}` of `{M}` | Lots that cannot hold the example house / lots listed | `search_properties` → `eliminatedCount`, `items.length` |
 | `{X}` sq ft, `{Y}` ft | The example house program (footprint, height) | The prompt used in the live flow |
 | `{n}` | Lots the agent searched | `search_properties` → `items.length` |
@@ -27,7 +27,7 @@ Type: **cut** (hard cut), **live** (screen recording of the deployed URL), **car
 |---|---|---|---|---|---|
 | 1 | 0:00–0:06 | b-roll → cut | `intro.mp4` slow dolly toward a cedar house, 4 s, then cut to a listing page beside the Design Manual PDF | Lower-left, small: `illustrative` (b-roll only). Then: `{N} of {M} listed lots` | "At The Sea Ranch, {N} of {M} listed lots can't hold a {X} square foot, {Y} foot house." |
 | 2 | 0:06–0:15 | live | Listing page; highlight price and acres; PDF page with the height rule beside it | `No listing says so.` / `Rule: Sea Ranch Design Manual, p.{P}` | "No listing says so. The rules sit in a fifty-two page manual and county maps. Buyers drive out to find the answer." |
-| 3 | 0:15–0:25 | card | `title.png` over `loop-title.mp4` (25% under the dark overlay) | `Can I build on this lot?` / `Your agent can finally answer.` | "{PRODUCT} makes a lot's facts readable by an agent. Every field is sourced. Every unknown is explicit." |
+| 3 | 0:15–0:25 | card | `title.png` over `loop-title.mp4` (25% under the dark overlay) | `Can I build on this lot?` / `Your agent can finally answer.` | "Lotline makes a lot's facts readable by an agent. Every field is sourced. Every unknown is explicit." |
 | 4 | 0:25–0:35 | live | Hero of the live URL, install line visible, cursor on the CTA | `Agent-readable property specs for coastal land.` | "Four tools over MCP, or a pay-per-call API. One question: can I build here?" |
 | 5 | 0:35–0:50 | live | Buyer prompt typed into the agent; trace panel starts | Prompt: `Find me a lot under {PRICE} where I can build a {X} sq ft, {Y} ft house with a deck.` | "The buyer tells their agent what they want to build." |
 | 6 | 0:50–1:05 | live | Trace: `search_properties` → `{n}` lots returned; unknown counts per lot | Trace lines in mono: `search_properties ✓ {ms} ms` | "The agent searches {n} lots. Each comes back with what is known and what is not." |

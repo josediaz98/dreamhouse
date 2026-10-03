@@ -14,7 +14,7 @@ Buyers drive out to find the answer.
 
 4
 00:00:15,300 --> 00:00:24,700
-{PRODUCT} makes a lot's facts readable by an agent.
+Lotline makes a lot's facts readable by an agent.
 Every field is sourced. Every unknown is explicit.
 
 5

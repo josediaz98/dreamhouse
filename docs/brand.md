@@ -1,16 +1,10 @@
-# Brand — DREAMHOUSE
+# Brand — Lotline (team: DREAMHOUSE)
 
 Owner: Brand lane. Tokens live in `src/styles/tokens.css`, fonts in `src/styles/fonts.ts`. This file is the reference; the CSS is the source of truth.
 
-## Product name — decision needed from Jose
+## Product name — decided: Lotline
 
-DREAMHOUSE is the team name. The product can differ. Assets below are set in the working name `dreamhouse`; the wordmark regenerates in one command once you pick (see Assets). Trademark and domain availability are **not checked** for any option.
-
-| Option | Why |
-|---|---|
-| **Lotline** (recommended) | The boundary where facts stop and unknowns begin. Matches the mark's dashed edge. Literal, hard to misread, easy to say to an agent |
-| **Plumb** | Builder's plumb line: "checked true". Short and ownable; less obvious what it does |
-| **Footing** | What the house stands on; the data layer under design, financing and builders. Softer link to the dashed-edge idea |
+Jose picked **Lotline** on 2026-10-03. DREAMHOUSE stays as the team name. The boundary where facts stop and unknowns begin; it matches the mark's dashed edge. Wordmark is set in lowercase (`lotline`), prose uses "Lotline". Runners-up considered: Tideline, Plumb, Footing, Stakeout, Plat, Datum. Trademark and domain availability are **not checked**.
 
 ## Voice
 
@@ -21,11 +15,11 @@ Direct, factual, no hype. We say what a field is, where it came from, and when w
 | File | Use |
 |---|---|
 | `public/brand/mark.svg`, `mark-mono.svg` | Mark: a shed-roof house (Sea Ranch silhouette) whose right wall is dashed in the accent: the unknown edge. `mark-mono` takes `currentColor` |
-| `public/brand/wordmark.svg` | Mark + `dreamhouse` in Fraunces 500, text converted to outlines (no font needed) |
+| `public/brand/wordmark.svg` | Mark + `lotline` in Fraunces 500, text converted to outlines (no font needed) |
 | `public/brand/icon.svg`, `src/app/icon.svg`, `src/app/apple-icon.png` | Favicon and touch icon (mark on a dark tile) |
 | `src/app/opengraph-image.png`, `public/brand/og.png` | OG image, 1200×630 (Next picks up the file convention) |
 | `docs/video/cards/*.html` + `.png` | OG source, title card and end card (1920×1080) |
-| `src/styles/assets/make-wordmark.py` | Regenerates the SVGs for a new name: `python make-wordmark.py <fraunces.woff2> public/brand <name>` (needs `fonttools`, `brotli`). Then re-render the cards from `docs/video/cards/` |
+| `src/styles/assets/make-wordmark.py` | Regenerates the SVGs (run for `lotline`; re-run to rename): `python make-wordmark.py <fraunces.woff2> public/brand <name>` (needs `fonttools`, `brotli`). Then re-render the cards from `docs/video/cards/` |
 
 Mark colours are literal hex (`#ecebe4`, `#d8a24a`) because SVG files cannot read CSS tokens; they match `fg` and `accent`.
 
