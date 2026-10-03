@@ -1,65 +1,59 @@
-# Video script — 2:30
+# Video script v2 — 2:30
 
-Source: `docs/demo-plan.md` §4. Final file: MP4, under 100 MB. **Check the hackathon rules page for a maximum length** (unconfirmed).
+Final file: MP4, H.264, under 100 MB. Check the hackathon rules page for a maximum length (unconfirmed). Voice-over language: English. Recording steps and roles: `docs/video/recording-plan.md`.
 
-## Fill before recording (placeholders in `{braces}`)
+## Real numbers used (from the live database, 2026-10-03)
 
-Every number on screen and in the voice-over comes from the real database, never from fixtures. The coordinator supplies these after the real rows exist.
-
-| Placeholder | Meaning | Source |
+| Fact | Value | Source |
 |---|---|---|
-| `Lotline` | Product name | Jose's pick, `docs/brand.md` |
-| `{N}` of `{M}` | Lots that cannot hold the example house / lots listed | `search_properties` → `eliminatedCount`, `items.length` |
-| `{X}` sq ft, `{Y}` ft | The example house program (footprint, height) | The prompt used in the live flow |
-| `{n}` | Lots the agent searched | `search_properties` → `items.length` |
-| `{K}` | Visits avoided at the end of the flow | `eliminatedCount` counter |
-| `{U}` | Unknowns on the lot we follow | `unknownCount` |
-| `{FIELD}` | The unknown we resolve (septic, tract-map height cap or flood zone) | `questions` row |
-| `{CALLS}` / `{USD}` | Calls in the receipt and sandbox amount | `GET /api/calls` |
+| Lots indexed | 6 | `search_properties` |
+| Ruled out at 26 ft | 2 (39463 Leeward Rd, 74 Burl Tree) | `eliminatedCount` |
+| Reason | Limit 24 ft west of Hwy 1; the house is 26 ft | Sea Ranch Design Manual §6.3 |
+| Example house | 2,155 sq ft footprint, 400 sq ft deck, 2 stories, 26 ft | demo program |
+| Lot we follow | 35604 Timber Ridge Road, $120,000, 0.45 ac, east of Hwy 1 (35 ft limit) | database |
+| Its unknowns | septic, water, flood zone (3 open questions) | `questions` |
+| Manual length | 52 pages | `tsra.org` PDF |
 
-Rule of thumb: if a number is not in the database yet, cut the sentence. Do not say "1–2 years" for design review as fact; it comes from a press article.
+Claims that are NOT allowed: "setbacks" (not evaluated), "1–2 years of design review" (press article), "no listing says so" for all lots (the Foothill listing does state a 24 ft limit; only the two failing lots do not mention it), a settled Stripe payment (only metering is verified).
 
-## Cues (voice-over target ≈ 330 words, 150 wpm)
+## Cues
 
-Type: **cut** (hard cut), **live** (screen recording of the deployed URL), **card** (static from `docs/video/cards/`), **b-roll** (Higgsfield, labelled "illustrative").
+Type: **live** (screen recording of the deployed URL), **term** (terminal with Claude Code), **card** (static from `docs/video/cards/`), **cut** (hard cut).
+Voice-over runs at about 150 words per minute; every cue leaves room around the words.
 
 | # | Time | Type | Shot | On-screen text (exact) | Voice-over (exact) |
 |---|---|---|---|---|---|
-| 1 | 0:00–0:06 | b-roll → cut | `intro.mp4` slow dolly toward a cedar house, 4 s, then cut to a listing page beside the Design Manual PDF | Lower-left, small: `illustrative` (b-roll only). Then: `{N} of {M} listed lots` | "At The Sea Ranch, {N} of {M} listed lots can't hold a {X} square foot, {Y} foot house." |
-| 2 | 0:06–0:15 | live | Listing page; highlight price and acres; PDF page with the height rule beside it | `No listing says so.` / `Rule: Sea Ranch Design Manual, p.{P}` | "No listing says so. The rules sit in a fifty-two page manual and county maps. Buyers drive out to find the answer." |
-| 3 | 0:15–0:25 | card | `title.png` over `loop-title.mp4` (25% under the dark overlay) | `Can I build on this lot?` / `Your agent can finally answer.` | "Lotline makes a lot's facts readable by an agent. Every field is sourced. Every unknown is explicit." |
-| 4 | 0:25–0:35 | live | Hero of the live URL, install line visible, cursor on the CTA | `Agent-readable property specs for coastal land.` | "Four tools over MCP, or a pay-per-call API. One question: can I build here?" |
-| 5 | 0:35–0:50 | live | Buyer prompt typed into the agent; trace panel starts | Prompt: `Find me a lot under {PRICE} where I can build a {X} sq ft, {Y} ft house with a deck.` | "The buyer tells their agent what they want to build." |
-| 6 | 0:50–1:05 | live | Trace: `search_properties` → `{n}` lots returned; unknown counts per lot | Trace lines in mono: `search_properties ✓ {ms} ms` | "The agent searches {n} lots. Each comes back with what is known and what is not." |
-| 7 | 1:05–1:20 | live | `check_buildability` runs per lot; failing rows turn red with the rule and source; counter ticks up | `fail · height 16 ft (tract map) · your house {Y} ft` / `Visits avoided: {K}` | "Verdicts are computed from the rules table, not by the model. These lots fail on height, coverage, setbacks. The agent never drives out to them." |
-| 8 | 1:20–1:30 | cut | **Before/after**, one cut: left "Agent without spec", right "With spec" | Left: `Guesses from listing text · invents setbacks · sounds sure` / Right: `Conditional · {U} open questions · each sourced` | "A generic model guesses and sounds sure. Here the answer is conditional, and every line has a source." |
-| 9 | 1:30–1:45 | live | Verdict JSON for the lot we follow: pass, fail, one `unknown` chip (dashed edge, `?`); source links | `unknown · {FIELD}` / `Sonoma data: planning purposes only` | "One lot passes everything we can check. One rule is unknown: {FIELD}. Unknown is an answer, not an error." |
-| 10 | 1:45–1:55 | live | Trace: `ask_seller` → question text appears, "{U} unknowns → seller questions drafted"; split screen opens the seller console | Trace last line: `{U} unknowns → seller questions drafted` | "The unknown becomes a question for the seller, drafted and sent by the agent." |
-| 11 | 1:55–2:10 | live | Seller console: open question, seller types the answer, submit. Right half: the verdict flips and the lot re-ranks in place (row highlight) | `Seller answer → verdict updated (Supabase Realtime)` | "The seller answers once. The spec updates over Supabase Realtime and the agent re-ranks the lots, live." |
-| 12 | 2:10–2:25 | live | Receipt panel: `{CALLS}` calls, `{USD}` sandbox amount, HTTP 402 line; then stack strip | `Pay per call · Stripe MPP · sandbox` / `Supabase · Vercel · Stripe · Claude` | "Every call is paid per use with Stripe's machine payments, in sandbox. Built on Supabase, Vercel, Stripe and Claude." |
-| 13 | 2:25–2:30 | card | `end.png` over `loop-closing.mp4` | `Lot facts first.` / `Then design, financing, builders.` / `dreamhouse-chi.vercel.app` | "Lot facts first. Then design, financing and builders." |
+| 1 | 0:00–0:10 | live | Buyer's agent view at 26 ft: the two red "Ruled out" rows, then cut to the Design Manual page with the 24 ft rule highlighted | `2 of 6 lots ruled out` / `Design Manual §6.3: 24 ft` | "Six lots at The Sea Ranch. Two can't hold a twenty-six-foot house. Neither listing mentions the height limit." |
+| 2 | 0:10–0:22 | live | Scroll the 52-page PDF fast, stop on the rule; fade to the parcel sheet | `52 pages · county maps · no structure` | "The rule lives in a fifty-two page manual and in county maps. A buyer's agent can't read any of that from a listing." |
+| 3 | 0:22–0:30 | card | `title.png` | `Can I build on this lot?` / `Your agent can finally answer.` | "Lotline makes a lot's facts readable by an agent. Every field is sourced. Every unknown is explicit." |
+| 4 | 0:30–1:05 | term | Claude Code in a clean terminal, connected to the Lotline MCP server. Type the buyer prompt; tool calls scroll; final answer. Sped up 2× during the wait; show the answer at normal speed | `Claude Code → Lotline MCP` / `sped up` (small, while sped up) | "This is Claude Code, connected to Lotline over MCP. The buyer asks for a house, twenty-six feet tall. The agent searches six lots and checks the best two. The verdicts come from a rules engine, not from the model." |
+| 5 | 1:05–1:20 | live | Landing: preset **35604 Timber Ridge Road** → Check buildability → Readable verdict: height pass, coverage pass, septic / water / flood unknown, sources linked | `Every check: source + page` | "Every check carries its source and its page in the Design Manual. Height passes. Septic, water and flood are unknown." |
+| 6 | 1:20–1:30 | live | Scroll to "Guessing vs knowing" (before/after) | none (the page text is the caption) | "A generic model guesses and sounds sure. Here the answer is conditional, and every line has a source." |
+| 7 | 1:30–1:40 | live | Parcel sheet: real outlines at one scale, verdict colours, the two dashed "?" parcels | `Sonoma County parcels · planning purposes only` | "Two parcels couldn't be resolved, so their outlines are dashed. Unknown is an answer, not an error." |
+| 8 | 1:40–2:05 | live | Split view: `/seller` on the left, buyer's list on the right. Answer the three Timber Ridge questions (septic, water, flood); after each, the row highlights; after the third it shows Pass | `Demo: seller answers typed by the presenter` / `Seller answer → verdict updated (Supabase Realtime)` | "Each unknown becomes a question for the seller. The seller answers, the spec updates over Supabase Realtime, and the verdict changes live. After three answers, this lot passes every rule we can check." |
+| 9 | 2:05–2:18 | live | Stripe test-mode dashboard: customer "Demo buyer agent", upcoming invoice with `N × Lotline tool call` at $0.50. `N` is whatever the dashboard shows at recording time | `Stripe Billing · sandbox · metered per call` | "Every priced tool call is metered in Stripe Billing, in sandbox. Pay per call, not per seat." |
+| 10 | 2:18–2:30 | card | `end.png` | `Lot facts first.` / `Then design, financing, builders.` / `dreamhouse-chi.vercel.app` | "Built on Supabase, Vercel, Stripe and Claude. Lot facts first. Then design, financing and builders." |
 
-## Sponsor mentions (one each)
+## Terminal prompt for cue 4 (exact; verified on the deployed MCP server)
 
-Supabase (cue 11, Realtime) · Stripe (cue 12, MPP) · Vercel and Claude (cue 12). Add Codex or Gemini only if they are in the core flow and ticked on the form.
+```
+Use the lotline tools. Find me a Sea Ranch lot under $400,000 where I can build a 2-story house with a 2,155 sq ft footprint, a 400 sq ft deck, 26 ft tall. Search once, check the two best lots that are not ruled out, and answer in under 120 words: which lots are ruled out, which rule and why, and what is still unknown. Report only what the tools returned; do not compute anything yourself.
+```
+
+Why this wording: a looser prompt ("a 2,155 sq ft house") made the agent assume a footprint of half that and then compute a wrong coverage figure on its own. With the prompt above, the verified answer rules out Leeward and Burl Tree on §6.3 (24 ft vs 26 ft), keeps Fly Cloud and Timber Ridge, and lists septic, water and flood as unknown, with setbacks marked not evaluated.
+
+## Sponsor mentions (once each)
+
+Supabase (cue 8, Realtime) · Stripe (cue 9, Billing meter) · Vercel and Claude (cue 10, and Claude Code on screen in cue 4).
 
 ## Overlay rules
 
-- b-roll always shows `illustrative`; end card needs no label (it uses the loop as texture only).
-- Anything from `src/lib/fixtures.ts` is `demo data` on screen. The final recording must use real rows, so no label should be needed.
-- Keep the Sonoma disclaimer (`planning purposes only, not parcel-specific decisions`) visible in cue 9.
+- Everything on screen comes from the real database. A fixture or a made-up number must never appear.
+- Keep the Sonoma disclaimer visible in cue 7.
+- Cue 8 always carries `Demo: seller answers typed by the presenter`.
+- No Higgsfield or stock footage; the title and end cards carry the brand.
+- The terminal appears only in cue 4, at a large font, with nothing else on screen.
 
-## Recording checklist
+## Optional captions
 
-| Item | Setting |
-|---|---|
-| Resolution | 1920×1080 capture, 30 fps (60 only if the screen recorder is smooth). Export MP4 H.264, AAC, under 100 MB |
-| Browser | Chrome, new window, private mode, no extensions bar, bookmarks bar hidden. Window exactly 1920×1080 (or 1280×720 at 150% for legible type) |
-| Zoom | 125% for the live flow so mono text reads on a phone; 100% for the hero |
-| Cursor | Highlight on (ring, accent `#d8a24a`) and click ripple; move slowly, no hunting |
-| Notifications | Do Not Disturb on; quit Slack, Mail, Messages; close other tabs; hide the Dock |
-| Data | Real rows only; 3 preset lots ingested and returning in under 2 s; mock or cache slow calls (LLM extraction, GIS) |
-| Terminal / editor | Never on screen |
-| Takes | **Two takes** of the full live flow (cues 5–12); keep the better; keep the backup file |
-| Audio | Record voice-over separately in a quiet room; same take count; no music over the voice-over |
-| Dry run | One run-through with the final URL in a fresh private window before recording |
+`docs/video/captions.srt` belongs to the old script. Regenerate it from the voice-over column once the final audio is recorded, or skip captions.
