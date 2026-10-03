@@ -1,68 +1,16 @@
 "use client";
 
-import { useImperativeHandle, useRef, useState, type FormEvent, type Ref } from "react";
-import type {
-  BuildabilityResult,
-  Property,
-  TraceEvent,
-  TraceStatus,
-  Verdict,
-} from "@/lib/contract";
-import {
-  askSeller,
-  checkBuildability,
-  getSpec,
-  listCalls,
-  listQuestions,
-  USE_FIXTURES,
-} from "@/lib/client/api";
-import { plainError } from "@/lib/client/errors";
+import { useImperativeHandle, useState, type FormEvent, type Ref } from "react";
+import type { Property } from "@/lib/contract";
+import { USE_FIXTURES } from "@/lib/client/api";
 import { formatCallUsd, formatMs, median, streetOf } from "@/lib/client/format";
 import type { LotView } from "@/lib/client/use-lots";
-import { DEFAULT_PROGRAM, FIELD_FOR_RULE } from "@/lib/client/types";
+import { matchLot, useLotCheck } from "@/lib/client/use-lot-check";
+import { DEFAULT_PROGRAM } from "@/lib/client/types";
 import { DemoBadge } from "@/components/demo-badge";
 import { ErrorBanner } from "@/components/error-banner";
-import { TracePanel, type TraceQuestion } from "@/components/trace-panel";
+import { TracePanel } from "@/components/trace-panel";
 import { VerdictList } from "@/components/verdict-list";
-
-type Phase = "idle" | "running" | "done" | "error";
-
-const VERDICT_TO_TRACE: Record<Verdict, TraceStatus> = {
-  pass: "ok",
-  fail: "fail",
-  unknown: "unknown",
-};
-
-function matchLot(query: string, lots: readonly LotView[]): LotView | null {
-  const needle = query.trim().toLowerCase();
-  if (needle === "") return null;
-  return (
-    lots.find(({ item }) => {
-      const { id, apn, address } = item.property;
-      return (
-        id.toLowerCase() === needle ||
-        (apn !== null && apn.toLowerCase() === needle) ||
-        address.toLowerCase().includes(needle)
-      );
-    }) ?? null
-  );
-}
-
-async function timed<T>(fn: () => Promise<T>): Promise<{ value: T; ms: number }> {
-  const start = performance.now();
-  const value = await fn();
-  return { value, ms: performance.now() - start };
-}
-
-function timedSync<T>(fn: () => T): { value: T; ms: number } {
-  const start = performance.now();
-  const value = fn();
-  return { value, ms: performance.now() - start };
-}
-
-function plural(n: number, word: string): string {
-  return `${n} ${word}${n === 1 ? "" : "s"}`;
-}
 
 export interface PlaygroundHandle {
   /** Select a lot by id and run the full check, as if its chip was clicked. */
@@ -81,184 +29,19 @@ interface PlaygroundProps {
 
 export function Playground({ lots, loading, failed = false, ref, onLotChange }: PlaygroundProps) {
   const [query, setQuery] = useState("");
-  const [phase, setPhase] = useState<Phase>("idle");
-  const [events, setEvents] = useState<readonly TraceEvent[]>([]);
-  const [questions, setQuestions] = useState<Readonly<Record<string, TraceQuestion>>>({});
-  const [summary, setSummary] = useState<string | null>(null);
-  const [result, setResult] = useState<BuildabilityResult | null>(null);
-  const [property, setProperty] = useState<Property | null>(null);
-  const [message, setMessage] = useState<string | null>(null);
-  const [lastQuery, setLastQuery] = useState<string | null>(null);
-  const [timings, setTimings] = useState<readonly number[]>([]);
-  const [medianCost, setMedianCost] = useState<number | null>(null);
-  const runId = useRef(0);
+  const check = useLotCheck(lots);
+  const { phase, events, questions, summary, result, property, message, lastQuery, timings, medianCost } =
+    check;
 
   const chips = [...lots]
     .sort((a, b) => a.item.property.address.localeCompare(b.item.property.address))
     .slice(0, 3);
   const p50 = median(timings);
 
-  function upsert(event: TraceEvent) {
-    setEvents((prev) =>
-      prev.some((e) => e.id === event.id)
-        ? prev.map((e) => (e.id === event.id ? event : e))
-        : [...prev, event],
-    );
-  }
-
-  async function run(rawQuery: string) {
-    const id = ++runId.current;
-    const current = () => runId.current === id;
-    setPhase("running");
-    setEvents([]);
-    setQuestions({});
-    setSummary(null);
-    setResult(null);
-    setProperty(null);
-    setMessage(null);
-    setLastQuery(null);
-
-    upsert({ id: "resolve", tool: "resolve_parcel", status: "running", label: `"${rawQuery}"`, ms: null });
-    const { value: match, ms: resolveMs } = timedSync(() => matchLot(rawQuery, lots));
-    if (!match) {
-      upsert({
-        id: "resolve",
-        tool: "resolve_parcel",
-        status: "fail",
-        label: "no indexed lot matches",
-        ms: resolveMs,
-      });
-      setPhase("error");
-      setMessage("No indexed lot matches that input. Pick one of the lots above.");
-      return;
-    }
-    const lot = match.item.property;
-    setProperty(lot);
-    onLotChange?.(lot.id);
-    upsert({
-      id: "resolve",
-      tool: "resolve_parcel",
-      status: "ok",
-      label: `${streetOf(lot)} → ${lot.apn ?? lot.id}`,
-      ms: resolveMs,
-    });
-
-    const spent: number[] = [];
-    try {
-      upsert({ id: "check", tool: "check_buildability", status: "running", label: "rules vs house program", ms: null });
-      const check = await timed(() =>
-        checkBuildability({ propertyId: lot.id, program: DEFAULT_PROGRAM }),
-      );
-      if (!current()) return;
-      spent.push(check.ms);
-      let final = check.value;
-      setResult(final);
-      upsert({
-        id: "check",
-        tool: "check_buildability",
-        status: VERDICT_TO_TRACE[final.overall],
-        label: `${final.overall} · ${plural(final.unknownCount, "unknown")}`,
-        ms: check.ms,
-      });
-
-      upsert({ id: "spec", tool: "get_spec", status: "running", label: "fields with provenance", ms: null });
-      const spec = await timed(() => getSpec({ propertyId: lot.id }));
-      if (!current()) return;
-      spent.push(spec.ms);
-      const known = spec.value.fields.filter((f) => f.status === "known").length;
-      upsert({
-        id: "spec",
-        tool: "get_spec",
-        status: "ok",
-        label: `${known} of ${spec.value.fields.length} fields known`,
-        ms: spec.ms,
-      });
-
-      // The unknowns become seller questions: the signature beat of the demo.
-      let drafted = 0;
-      let reused = final.checks.filter((c) => c.verdict === "unknown" && c.questionId !== null).length;
-      // A lot already ruled out by a hard rule does not need seller questions.
-      const worthAsking = final.overall !== "fail";
-      // Never ask twice for the same lot and field: reuse a question that is still open.
-      const openQuestions = worthAsking
-        ? await listQuestions("open").catch(() => [] as const)
-        : [];
-      if (!current()) return;
-      for (const item of final.checks) {
-        if (!worthAsking || item.verdict !== "unknown" || item.questionId !== null) continue;
-        const eventId = `ask-${item.rule}`;
-        const existing = openQuestions.find(
-          (q) => q.propertyId === lot.id && q.fieldKey === FIELD_FOR_RULE[item.rule],
-        );
-        if (existing) {
-          reused += 1;
-          final = {
-            ...final,
-            checks: final.checks.map((c) =>
-              c.rule === item.rule ? { ...c, questionId: existing.id } : c,
-            ),
-          };
-          setResult(final);
-          upsert({
-            id: eventId,
-            tool: "ask_seller",
-            status: "unknown",
-            label: `${FIELD_FOR_RULE[item.rule]} unknown · question already open`,
-            ms: null,
-          });
-          setQuestions((prev) => ({ ...prev, [eventId]: { text: existing.text, reused: true } }));
-          continue;
-        }
-        upsert({ id: eventId, tool: "ask_seller", status: "running", label: FIELD_FOR_RULE[item.rule], ms: null });
-        const text = `Can the seller confirm ${item.label.toLowerCase()}? ${item.detail}`;
-        const asked = await timed(() =>
-          askSeller({ propertyId: lot.id, fieldKey: FIELD_FOR_RULE[item.rule], text }),
-        );
-        if (!current()) return;
-        spent.push(asked.ms);
-        drafted += 1;
-        final = {
-          ...final,
-          checks: final.checks.map((c) =>
-            c.rule === item.rule ? { ...c, questionId: asked.value.question.id } : c,
-          ),
-        };
-        setResult(final);
-        upsert({
-          id: eventId,
-          tool: "ask_seller",
-          status: "unknown",
-          label: `${FIELD_FOR_RULE[item.rule]} unknown`,
-          ms: asked.ms,
-        });
-        setQuestions((prev) => ({
-          ...prev,
-          [eventId]: { text: asked.value.question.text, reused: false },
-        }));
-      }
-
-      setSummary(
-        final.overall === "fail"
-          ? "Ruled out by a hard rule: no site visit, no seller questions."
-          : final.unknownCount === 0
-            ? "No unknowns: every rule has a sourced answer."
-            : `${plural(final.unknownCount, "unknown")} → ${plural(drafted + reused, "seller question")} ${drafted === 0 ? "open" : "drafted"}`,
-      );
-      setTimings((prev) => [...prev, ...spent]);
-      setPhase("done");
-
-      try {
-        const calls = await listCalls();
-        setMedianCost(median(calls.map((c) => c.amountUsd).filter((amount) => amount > 0)));
-      } catch {
-        // Cost line stays at its previous value; the verdict is already on screen.
-      }
-    } catch (e) {
-      if (!current()) return;
-      setPhase("error");
-      setMessage(plainError(e, "run the check"));
-      setLastQuery(rawQuery);
-    }
+  function run(rawQuery: string) {
+    const match = matchLot(rawQuery, lots);
+    if (match) onLotChange?.(match.item.property.id);
+    return check.run(rawQuery, DEFAULT_PROGRAM);
   }
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {

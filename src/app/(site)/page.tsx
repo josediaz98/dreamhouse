@@ -1,11 +1,5 @@
-import { BuyerDemo } from "@/components/buyer-demo";
-import { Hero } from "@/components/hero";
+import { Landing } from "@/components/landing";
 
 export default function HomePage() {
-  return (
-    <>
-      <Hero />
-      <BuyerDemo />
-    </>
-  );
+  return <Landing />;
 }

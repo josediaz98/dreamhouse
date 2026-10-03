@@ -15,7 +15,7 @@ export function BeforeAfter({ eliminatedCount, openQuestions }: BeforeAfterProps
         </p>
         <ul className="mt-4 flex list-disc flex-col gap-2 pl-5 text-sm text-fg marker:text-fail">
           <li>Reads the listing prose and answers with confidence.</li>
-          <li>Invents setbacks and a height limit from general knowledge.</li>
+          <li>May invent setbacks and a height limit from general knowledge.</li>
           <li>Cites no source, so nothing can be checked.</li>
         </ul>
       </div>

@@ -17,6 +17,18 @@
 }
 .dot-running { animation: dot-pulse 1s ease-in-out infinite; }
 
+@keyframes popover-in {
+  from { opacity: 0; transform: translateY(-4px) scale(0.98); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.popover-in { animation: popover-in 0.18s var(--ease-out-quint) 1; transform-origin: top right; }
+
+@keyframes expand-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.expand-in { animation: expand-in 0.22s var(--ease-out-quint) 1; }
+
 @media (prefers-reduced-motion: reduce) {
-  .row-flash, .question-in, .dot-running { animation: none; }
+  .row-flash, .question-in, .dot-running, .popover-in, .expand-in { animation: none; }
 }

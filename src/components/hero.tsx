@@ -1,51 +1,45 @@
-"use client";
+import type { ReactNode } from "react";
 
-import { useState } from "react";
+interface HeroProps {
+  /** Indexed lots, from the live API. Null while loading or when the count is unavailable. */
+  readonly lotCount: number | null;
+  /** The command box. */
+  readonly children: ReactNode;
+}
 
-const INSTALL_LINE =
-  "claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp";
-
-export function Hero() {
-  const [copied, setCopied] = useState(false);
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(INSTALL_LINE);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1800);
-    } catch {
-      // Clipboard blocked: the line stays selectable.
-    }
-  }
-
+export function Hero({ lotCount, children }: HeroProps) {
   return (
-    <section className="mx-auto w-full max-w-6xl px-4 pb-10 pt-14 sm:px-6 sm:pt-20">
-      <h1 className="max-w-3xl text-balance text-4xl font-semibold leading-tight tracking-tight text-fg sm:text-5xl">
-        Can I build on this lot? Your agent can finally answer.
-      </h1>
-      <p className="mt-5 max-w-2xl text-lg text-muted">
-        Agent-readable property specs for coastal land. MCP server + pay-per-call API.
+    <section
+      aria-labelledby="hero-heading"
+      className="relative flex min-h-[calc(100svh-4.5rem)] flex-col items-center justify-center px-4 pb-16 pt-12 text-center sm:px-6 sm:pb-24 sm:pt-16"
+    >
+      <p className="inline-flex min-h-8 items-center gap-2 whitespace-nowrap rounded-full border border-line bg-surface px-3 font-mono text-xs text-muted max-sm:tracking-tight">
+        <span aria-hidden className="size-1.5 rounded-full bg-pass max-sm:hidden" />
+        <span>
+          The Sea Ranch, CA
+          {lotCount === null ? null : (
+            <>
+              {" · "}
+              <span className="tabular-nums text-fg">{lotCount}</span> lots
+            </>
+          )}
+          {" · "}live county data
+        </span>
       </p>
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-stretch">
-        <a
-          href="#demo"
-          className="inline-flex items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-ink hover:bg-accent-strong"
-        >
-          Try the live demo
-        </a>
-        <div className="flex min-w-0 flex-1 items-center gap-2 rounded-md border border-line bg-surface py-1.5 pl-3 pr-1.5 sm:max-w-3xl">
-          <code className="min-w-0 flex-1 overflow-x-auto whitespace-nowrap font-mono text-xs text-fg sm:text-sm">
-            {INSTALL_LINE}
-          </code>
-          <button
-            type="button"
-            onClick={copy}
-            className="shrink-0 rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised max-sm:min-h-11"
-          >
-            {copied ? "Copied" : "Copy"}
-          </button>
-        </div>
-      </div>
+
+      <h1
+        id="hero-heading"
+        className="mt-7 text-balance text-4xl leading-[1.05] text-fg sm:text-5xl xl:text-[4.5rem] xl:leading-[1.04]"
+      >
+        <span className="block">Can I build on this lot?</span>
+        <span className="block text-accent">Your agent can finally answer.</span>
+      </h1>
+
+      <p className="mt-6 max-w-3xl text-pretty text-base text-muted sm:text-lg">
+        Agent-readable property specs for coastal land. Every fact sourced. Every unknown explicit.
+      </p>
+
+      <div className="mt-10 flex w-full justify-center sm:mt-12">{children}</div>
     </section>
   );
 }
