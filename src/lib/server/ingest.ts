@@ -116,6 +116,7 @@ const SYSTEM = `You extract facts from a real-estate listing for a land buyer's 
 - water_status / septic_status "available" / "sewer_available" only for public service stated as available at the lot or street.
 - hwy1_side: only if the text says east or west of Highway 1. A neighbourhood name is not evidence.
 - design_committee_status: the stage in the text, e.g. "approved conceptual plans".
+- Call record_facts exactly once, even when there are no facts (empty array).
 - Numbers are plain numbers (price in USD, acres as decimals, feet).`;
 
 export function claudeExtractor(client: Anthropic = new Anthropic()): Extractor {
@@ -150,7 +151,8 @@ export function claudeExtractor(client: Anthropic = new Anthropic()): Extractor 
           },
         },
       ],
-      tool_choice: { type: "tool", name: "record_facts" },
+      // This model rejects forced tool_choice; "auto" plus the instruction below is enough in practice.
+      tool_choice: { type: "auto" },
       messages: [{ role: "user", content: `Listing text:\n\n${snapshot.body}` }],
     });
     const block = res.content.find((b) => b.type === "tool_use");

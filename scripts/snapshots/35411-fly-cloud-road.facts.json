@@ -1,5 +1,5 @@
 {
-  "extractedBy": "claude-code (offline, one-off) over the snapshot text; every evidence quote is re-verified against the snapshot at ingest",
+  "extractedBy": "claude-sonnet-5-5 via scripts/ingest.ts --extract; evidence verified against the snapshot",
   "facts": [
     {
       "key": "price_usd",
@@ -10,14 +10,16 @@
     {
       "key": "acres",
       "value": 1,
-      "confidence": 0.5,
-      "evidence": "says 1 acre"
+      "confidence": 0.8,
+      "evidence": "the summary headline says 1 acre",
+      "note": "Summary headline value; conflicts with description saying over one-half acre."
     },
     {
       "key": "acres",
       "value": 0.5,
-      "confidence": 0.7,
-      "evidence": "over one-half acre"
+      "confidence": 0.6,
+      "evidence": "encompassing over one-half acre of gently sloping terrain",
+      "note": "Description says 'over one-half acre', so a lower bound of roughly 0.5; conflicts with headline 1 acre."
     }
   ]
 }

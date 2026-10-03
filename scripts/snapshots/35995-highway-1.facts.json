@@ -1,30 +1,30 @@
 {
-  "extractedBy": "claude-code (offline, one-off) over the snapshot text; every evidence quote is re-verified against the snapshot at ingest",
+  "extractedBy": "claude-sonnet-5-5 via scripts/ingest.ts --extract; evidence verified against the snapshot",
   "facts": [
     {
       "key": "price_usd",
       "value": 395000,
-      "confidence": 0.95,
-      "evidence": "Listed at $395,000"
+      "confidence": 0.98,
+      "evidence": "Listed at $395,000."
     },
     {
       "key": "acres",
       "value": 2.23,
-      "confidence": 0.95,
+      "confidence": 0.98,
       "evidence": "2.23 acre parcel"
-    },
-    {
-      "key": "design_committee_status",
-      "value": "approved conceptual plans",
-      "confidence": 0.85,
-      "evidence": "approved conceptual plans"
     },
     {
       "key": "septic_status",
       "value": null,
       "confidence": 0.9,
-      "evidence": "perc test/septic design and requires septic",
-      "note": "Listing mentions a 4 bedroom perc test/septic design and says the lot requires septic; no approval is stated"
+      "evidence": "The property has a 4 Bedroom perc test/septic design and requires septic.",
+      "note": "Perc test/septic design only; no approval or permit stated. Property requires septic."
+    },
+    {
+      "key": "design_committee_status",
+      "value": "approved conceptual plans",
+      "confidence": 0.9,
+      "evidence": "approved conceptual plans for a 4BR, 3BA home"
     }
   ]
 }

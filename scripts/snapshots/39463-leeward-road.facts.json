@@ -1,16 +1,16 @@
 {
-  "extractedBy": "claude-code (offline, one-off) over the snapshot text; every evidence quote is re-verified against the snapshot at ingest",
+  "extractedBy": "claude-sonnet-5-5 via scripts/ingest.ts --extract; evidence verified against the snapshot",
   "facts": [
     {
       "key": "price_usd",
       "value": 224500,
-      "confidence": 0.95,
-      "evidence": "Listed at $224,500"
+      "confidence": 0.98,
+      "evidence": "Listed at $224,500."
     },
     {
       "key": "acres",
       "value": 0.39,
-      "confidence": 0.95,
+      "confidence": 0.98,
       "evidence": "0.39-acre meadow lot"
     },
     {
@@ -18,7 +18,7 @@
       "value": null,
       "confidence": 0.9,
       "evidence": "septic design by Dimensions IV available",
-      "note": "Listing says a septic design by Dimensions IV is available; no approval is stated"
+      "note": "Only a septic design is mentioned as available; no approval or permit is stated, so this is not approval."
     }
   ]
 }

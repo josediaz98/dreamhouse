@@ -3,13 +3,15 @@
  *   pnpm exec tsx --env-file=.env.local scripts/ingest.ts
  * For each snapshots/*.txt: facts come from <name>.facts.json when present (offline extraction cache),
  * otherwise from Claude (needs ANTHROPIC_API_KEY). Evidence is verified either way.
+ * `--extract` ignores the cache and calls Claude for every snapshot (needs ANTHROPIC_API_KEY); with `--write-cache` the
+ * validated facts replace <name>.facts.json.
  * `--dry` writes to an in-memory repo instead and prints the verdict for the demo program.
  */
-import { readdir, readFile } from "node:fs/promises";
+import { readdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { geocodeAddress } from "../src/lib/server/geocode";
 import { gisSpecFields, hwy1SideField, resolveParcel, type Parcel } from "../src/lib/server/gis";
-import { buildSpecFields, claudeExtractor, FactsSchema, parseSnapshot, validateFacts, type ExtractedFact } from "../src/lib/server/ingest";
+import { buildSpecFields, claudeExtractor, EXTRACTION_MODEL, FactsSchema, parseSnapshot, validateFacts, type ExtractedFact } from "../src/lib/server/ingest";
 import { memoryRepo } from "../src/lib/server/repo-memory";
 import { supabaseRepo } from "../src/lib/server/repo-supabase";
 import { SEA_RANCH_RULES } from "../src/lib/server/rules";
@@ -17,15 +19,26 @@ import { runTool } from "../src/lib/server/tools";
 
 const DIR = path.join(import.meta.dirname, "snapshots");
 
-async function factsFor(name: string, body: ReturnType<typeof parseSnapshot>): Promise<readonly ExtractedFact[]> {
+async function cachedFacts(name: string): Promise<readonly ExtractedFact[] | null> {
   try {
-    const cached = FactsSchema.parse(JSON.parse(await readFile(path.join(DIR, `${name}.facts.json`), "utf8")));
-    return cached.facts;
+    return FactsSchema.parse(JSON.parse(await readFile(path.join(DIR, `${name}.facts.json`), "utf8"))).facts;
   } catch (e) {
-    if (!(e instanceof Error && "code" in e && e.code === "ENOENT")) throw e;
+    if (e instanceof Error && "code" in e && e.code === "ENOENT") return null;
+    throw e;
   }
-  if (!process.env.ANTHROPIC_API_KEY) throw new Error(`${name}: no ${name}.facts.json and ANTHROPIC_API_KEY is not set`);
-  return claudeExtractor()(body);
+}
+
+async function factsFor(name: string, snap: ReturnType<typeof parseSnapshot>): Promise<readonly ExtractedFact[]> {
+  const forceExtract = process.argv.includes("--extract");
+  const cached = forceExtract ? null : await cachedFacts(name);
+  if (cached) return cached;
+  if (!process.env.ANTHROPIC_API_KEY) throw new Error(`${name}: no cached facts and ANTHROPIC_API_KEY is not set`);
+  const facts = await claudeExtractor()(snap);
+  if (process.argv.includes("--write-cache")) {
+    const { kept } = validateFacts(snap, facts);
+    await writeFile(path.join(DIR, `${name}.facts.json`), `${JSON.stringify({ extractedBy: `${EXTRACTION_MODEL} via scripts/ingest.ts --extract; evidence verified against the snapshot`, facts: kept }, null, 2)}\n`);
+  }
+  return facts;
 }
 
 async function geocodeWithRetry(address: string) {
