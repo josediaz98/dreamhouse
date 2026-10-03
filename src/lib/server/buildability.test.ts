@@ -54,6 +54,13 @@ describe("checkBuildability", () => {
     expect(r.openQuestionIds).toEqual(["q1"]);
   });
 
+  it("joins notes without double punctuation", () => {
+    const withPeriod = run([...without(GOOD, "septic_status"), unk("septic_status", "The text states no septic approval or permit.")]);
+    const withoutPeriod = run([...without(GOOD, "septic_status"), unk("septic_status", "No septic information in the listing")]);
+    expect(check(withPeriod, "septic").detail).toBe("Septic status is not established. The text states no septic approval or permit.");
+    expect(check(withoutPeriod, "septic").detail).toBe("Septic status is not established. No septic information in the listing.");
+  });
+
   it("fail beats unknown", () => {
     const r = run([
       ...without(without(GOOD, "septic_status"), "hwy1_side"),

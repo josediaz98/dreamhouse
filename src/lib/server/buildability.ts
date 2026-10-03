@@ -68,7 +68,9 @@ function sourcesOf(...fs: readonly (SpecField | null | undefined)[]): SourceRef[
 }
 
 function noteOf(f: SpecField | undefined): string {
-  return f?.note ? ` ${f.note}.` : "";
+  const note = f?.note?.trim();
+  if (!note) return "";
+  return /[.!?]$/.test(note) ? ` ${note}` : ` ${note}.`;
 }
 
 function ruleById(rules: readonly Rule[], id: string): Rule | null {
