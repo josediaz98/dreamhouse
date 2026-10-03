@@ -22,9 +22,9 @@ import { RULE_IDS } from "@/lib/server/rules";
 
 const SQFT_PER_ACRE = 43_560;
 
-const SEPTIC_PASS = ["approved", "installed", "not_required"] as const;
+const SEPTIC_PASS = ["approved", "installed", "not_required", "sewer_available"] as const;
 const SEPTIC_FAIL = ["denied", "infeasible"] as const;
-const WATER_PASS = ["connected", "well_approved", "installed"] as const;
+const WATER_PASS = ["connected", "well_approved", "installed", "available"] as const;
 const WATER_FAIL = ["unavailable"] as const;
 const FLOOD_PASS = ["X"] as const;
 

@@ -1,0 +1,23 @@
+{
+  "extractedBy": "claude-code (offline, one-off) over the snapshot text; every evidence quote is re-verified against the snapshot at ingest",
+  "facts": [
+    {
+      "key": "price_usd",
+      "value": 105000,
+      "confidence": 0.95,
+      "evidence": "Listed for $105,000"
+    },
+    {
+      "key": "acres",
+      "value": 1,
+      "confidence": 0.5,
+      "evidence": "says 1 acre"
+    },
+    {
+      "key": "acres",
+      "value": 0.5,
+      "confidence": 0.7,
+      "evidence": "over one-half acre"
+    }
+  ]
+}

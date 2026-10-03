@@ -154,6 +154,7 @@ export async function gisSpecFields(propertyId: string, parcel: Parcel): Promise
     out.push(f(propertyId, "flood_zone", null, FEMA_SOURCE, why), f(propertyId, "coastal_zone", null, COASTAL_SOURCE, why));
     return out;
   }
+  out.push(await hwy1SideField(propertyId, parcel.lon, parcel.lat, "the parcel centroid"));
   const [flood, coastal] = await Promise.allSettled([floodZoneAt(parcel.lon, parcel.lat), inCoastalZone(parcel.lon, parcel.lat)]);
   if (flood.status === "rejected") out.push(f(propertyId, "flood_zone", null, FEMA_SOURCE, `FEMA lookup failed: ${String(flood.reason)}`));
   else if (flood.value === null || flood.value.zone === null) out.push(f(propertyId, "flood_zone", null, FEMA_SOURCE, "No NFHL polygon at the parcel centroid"));
@@ -192,4 +193,86 @@ export async function resolveParcel(lon: number, lat: number, acresHints: readon
       ? `No vacant parcel within 80 m matches the listed acreage (${acresHints.join(" / ")} ac)`
       : `${matches.length} vacant parcels within 80 m match the listed acreage; APN not guessed`,
   };
+}
+
+// ---------------------------------------------------------------------------
+// Side of Highway One (Caltrans State Highway Network, Route 1 centerline)
+// ---------------------------------------------------------------------------
+
+const SHN_URL = "https://caltrans-gis.dot.ca.gov/arcgis/rest/services/CHhighway/SHN_Lines/FeatureServer/0/query";
+const SHN_SOURCE: SourceRef = { type: "gis", url: SHN_URL, page: null, label: "Caltrans State Highway Network, Route 1 centerline (derived side)" };
+
+type LonLat = readonly [number, number];
+
+/** Closer than this to the centerline, the side is too close to call from a point estimate. */
+const MIN_CLEARANCE_M = 30;
+/** Farther than this, the nearest road segment is not the Hwy 1 that bounds the lot. */
+const MAX_DISTANCE_M = 3_000;
+
+/**
+ * "west" or "east" of the nearest Route 1 segment, or null when it cannot be told apart
+ * (no road within 3 km, within 30 m of the road, or the road runs east-west).
+ * Planar math in a local metre frame: fine at this scale.
+ */
+export function sideOfRoute(point: LonLat, paths: readonly (readonly LonLat[])[]): "west" | "east" | null {
+  const kx = 111_320 * Math.cos((point[1] * Math.PI) / 180);
+  const ky = 110_540;
+  let best: { dist: number; cross: number; dy: number } | null = null;
+  for (const path of paths) {
+    for (let i = 0; i + 1 < path.length; i++) {
+      const a = path[i];
+      const b = path[i + 1];
+      if (!a || !b) continue;
+      const dx = (b[0] - a[0]) * kx;
+      const dy = (b[1] - a[1]) * ky;
+      const px = (point[0] - a[0]) * kx;
+      const py = (point[1] - a[1]) * ky;
+      const len2 = dx * dx + dy * dy;
+      if (len2 === 0) continue;
+      const t = Math.max(0, Math.min(1, (px * dx + py * dy) / len2));
+      const dist = Math.hypot(px - t * dx, py - t * dy);
+      if (best === null || dist < best.dist) best = { dist, cross: dx * py - dy * px, dy };
+    }
+  }
+  if (best === null || best.dist > MAX_DISTANCE_M || best.dist < MIN_CLEARANCE_M) return null;
+  if (best.dy === 0) return null; // a due east-west segment has no west/east side
+  // Heading north (dy > 0): left of travel is west. Heading south: left of travel is east.
+  return best.cross > 0 === best.dy > 0 ? "west" : "east";
+}
+
+export async function hwy1SideField(propertyId: string, lon: number, lat: number, basis: string): Promise<SpecField> {
+  const mk = (value: "west" | "east" | null, note: string): SpecField => ({
+    propertyId,
+    key: "hwy1_side",
+    value,
+    status: value === null ? "unknown" : "known",
+    source: SHN_SOURCE,
+    confidence: null,
+    note,
+  });
+  try {
+    const d = 0.03;
+    const qs = new URLSearchParams({
+      f: "json",
+      geometry: `${lon - d},${lat - d},${lon + d},${lat + d}`,
+      geometryType: "esriGeometryEnvelope",
+      inSR: "4326",
+      spatialRel: "esriSpatialRelIntersects",
+      where: "Route=1",
+      outFields: "Route",
+      returnGeometry: "true",
+      outSR: "4326",
+    });
+    const res = await fetch(`${SHN_URL}?${qs.toString()}`, { signal: AbortSignal.timeout(15_000) });
+    if (!res.ok) throw new Error(`Caltrans ${res.status}`);
+    const body = (await res.json()) as { error?: { message?: string }; features?: { geometry?: { paths?: number[][][] } }[] };
+    if (body.error) throw new Error(body.error.message ?? "Caltrans error");
+    const paths = (body.features ?? []).flatMap((f) => f.geometry?.paths ?? []).map((p) => p.map((c): LonLat => [c[0] ?? 0, c[1] ?? 0]));
+    const side = sideOfRoute([lon, lat], paths);
+    return side
+      ? mk(side, `Derived from the Caltrans Route 1 centerline at ${basis}; confirm against the recorded tract map`)
+      : mk(null, `Side of Hwy 1 could not be derived at ${basis} (no Route 1 within 3 km, or within 30 m of it)`);
+  } catch (e) {
+    return mk(null, `Caltrans lookup failed: ${e instanceof Error ? e.message : String(e)}`);
+  }
 }

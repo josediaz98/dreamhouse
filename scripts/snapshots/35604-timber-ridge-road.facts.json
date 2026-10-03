@@ -1,0 +1,24 @@
+{
+  "extractedBy": "claude-code (offline, one-off) over the snapshot text; every evidence quote is re-verified against the snapshot at ingest",
+  "facts": [
+    {
+      "key": "price_usd",
+      "value": 120000,
+      "confidence": 0.95,
+      "evidence": "Listed at $120,000"
+    },
+    {
+      "key": "acres",
+      "value": 0.46,
+      "confidence": 0.95,
+      "evidence": "0.46 acre ridge lot"
+    },
+    {
+      "key": "septic_status",
+      "value": null,
+      "confidence": 0.9,
+      "evidence": "older 3 bedroom perc test, needs to be updated",
+      "note": "Listing mentions an older 3 bedroom perc test that needs to be updated; no septic approval is stated"
+    }
+  ]
+}
