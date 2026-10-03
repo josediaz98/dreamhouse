@@ -47,7 +47,7 @@ Metering only fires on a host that has `STRIPE_SECRET_KEY` and `STRIPE_METER_CUS
 | A | 1–4 | ~38 s | Private window, open `https://dreamhouse-chi.vercel.app/?tour=1`. Onboarding step 1 (hold on the left card, then the right card), **Next**, step 2, **Next**, step 3, **Search lots**, results load | `?tour=1` always opens the tour. Results take ~2 s to load on production; keep talking |
 | D | 5 | ~30 s narrated; wait sped up | Terminal: paste the exact prompt from `script.md`; let the answer finish; hold 5 s | Retake if the answer contradicts cue 6 |
 | E | 6–7 | ~24 s | In Results, **View checks** on 35604 Timber Ridge Road (aerial + checks). Then the **Map** toggle | State must be clean |
-| F | 8 | ~26 s | `https://dreamhouse-chi.vercel.app/seller`. Timber Ridge card: for septic, water, flood click the **Demo answers** chip, then **Send**; wait for the highlight on the right after each | Reset before every take |
+| F | 8 | ~26 s | `https://dreamhouse-chi.vercel.app/seller` → click **35604 Timber Ridge Road** → on its page, for septic, water, flood: click the **Demo answers** chip, then **Send**; wait for the verdict block to flash after each; end on Pass | Reset before every take |
 | G | 9–10 | ~24 s | Stripe test-mode dashboard: `https://dreamhouse-chi.vercel.app` metering customer "Demo buyer agent" (`https://dashboard.stripe.com/test/customers/cus_VNJlUF8WwghCY7`), upcoming invoice line. Then `https://dreamhouse-chi.vercel.app/llms.txt` | Record after A–F so `N` > 1 |
 | — | 11 | 8 s | Claude adds `end.png` | — |
 
