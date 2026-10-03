@@ -48,7 +48,7 @@ Metering only fires on a host that has `STRIPE_SECRET_KEY` and `STRIPE_METER_CUS
 | B | 3 | none | Nothing to record. Claude uses `title.png` | — |
 | C | — | — | Reserved (not used) | — |
 | D | 4 | ~35 s of narration; the wait is cut and sped up | Terminal: paste the exact prompt from `script.md`; let the answer finish; stay on the final answer for 5 s | Record the whole run. If the answer has setbacks stated as passed, or different lots ruled out, redo it |
-| E | 5–6 | ~25 s | In Results, **View checks** on 35604 Timber Ridge Road (card expands). Then scroll to section 03 "Guessing vs knowing" | State must be clean (reset first) |
+| E | 5–6 | ~25 s | In Results, **View checks** on 35604 Timber Ridge Road (card expands). Then scroll to section 03 "“I don’t know” vs a sourced answer" | State must be clean (reset first) |
 | F | 7–8 | ~50 s | Parcel sheet, then split view: `/seller` left, landing list right. Answer the 3 Timber Ridge questions with: `Septic permitted for 3 bedrooms` / `Connected to the Sea Ranch Water Company` / `Outside the special flood hazard area`. Wait for the highlight after each | Reset before every take. Do not touch other lots |
 | G | 9 | ~13 s | Stripe test-mode dashboard: customer "Demo buyer agent", `https://dashboard.stripe.com/test/customers/cus_VNJlUF8WwghCY7`, upcoming invoice with the metered line | Record after D, E and F so `N` is more than 1 |
 | — | 10 | none | Claude uses `end.png` | — |
@@ -79,7 +79,7 @@ Never answer questions on the live site outside a recording, or the state will n
 5. Parcel sheet
 6. Seller console with an open question
 7. Verdict after the third answer (Pass)
-8. Before/after ("Guessing vs knowing")
+8. Before/after ("“I don’t know” vs a sourced answer")
 9. OG image / wordmark (`public/brand/og.png`)
 
 ## Risks

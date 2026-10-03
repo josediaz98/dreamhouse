@@ -58,7 +58,7 @@ export function BuyerDemo() {
         />
       </Section>
 
-      <Section title="Guessing vs knowing">
+      <Section title="“I don’t know” vs a sourced answer">
         <BeforeAfter eliminatedCount={lotsState.eliminatedCount} openQuestions={openQuestions} />
       </Section>
 

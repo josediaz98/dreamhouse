@@ -1,0 +1,59 @@
+# Lotline
+
+> Agent-readable property specs for coastal land. Ask whether a house fits a lot and get a verdict per rule (pass, fail or unknown) with a source for every fact. Unknown facts become questions to the seller. Demo market: The Sea Ranch, CA (6 lots, data captured 2026-10-03).
+
+Base URL: https://dreamhouse-chi.vercel.app
+
+## Connect
+
+- MCP (Streamable HTTP): https://dreamhouse-chi.vercel.app/mcp
+- Claude Code: `claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp`
+- REST: `POST https://dreamhouse-chi.vercel.app/api/tools/{tool}` with a JSON body equal to the tool input. No authentication.
+
+## Tools
+
+- `search_properties`: list lots. Input (all optional): `maxPriceUsd`, `minAcres`, `maxAcres`, `program` = { `footprintSqFt`, `deckSqFt`, `heightFt`, `stories` }. With `program`, each lot carries a verdict and `eliminatedCount` counts lots ruled out by a failing rule. Free.
+- `get_spec`: every known and unknown field for one lot, each with its source. Input: `propertyId`. Metered.
+- `check_buildability`: one verdict per rule (height, lot coverage, septic, water, flood zone) for a house program. Input: `propertyId`, `program`. Metered.
+- `ask_seller`: open a question for the seller about one unknown field. Input: `propertyId`, `fieldKey`, `text`. Idempotent: returns the open question if one exists for that field. Free.
+
+Example:
+
+```
+curl -s -X POST https://dreamhouse-chi.vercel.app/api/tools/search_properties \
+  -H 'content-type: application/json' \
+  -d '{"program":{"footprintSqFt":2155,"deckSqFt":400,"heightFt":26,"stories":2}}'
+```
+
+Other routes: `GET /api/questions?status=open|answered`, `POST /api/questions/{id}/answer` with `{"answer": "..."}`, `GET /api/calls`.
+
+## How to read a verdict
+
+- `fail` beats `unknown`, and `unknown` beats `pass`. A lot passes only when every rule we can check passes.
+- Verdicts are computed by a deterministic rules engine from cited rules. A language model extracts listing facts; it never decides a verdict.
+- `unknown` is an answer, not an error. Each unknown that matters has a seller question; answer it to update the verdict.
+- Every check lists its sources (Design Manual section and page, county GIS layer, listing summary, or seller answer).
+
+## Pricing
+
+`get_spec` and `check_buildability` are metered at $0.50 per call in Stripe Billing, test mode (no real charges). Everything else is free.
+
+## Limits
+
+- Setbacks are seeded as rules but not evaluated (no lot dimensions). No result claims a setback pass.
+- FEMA flood zone D means "undetermined" and stays `unknown` until a seller answers.
+- Listing facts come from search-result summaries captured 2026-10-03, not the listing pages.
+- Sea Ranch Design Manual, 2013 edition. CC&Rs are not used (behind a login).
+- Sonoma County GIS is for planning purposes only, not parcel-specific decisions.
+- Two lots have no resolved APN.
+- Not legal, engineering or financial advice.
+
+## Sources
+
+- Sea Ranch Design Manual and Rules (2013): https://www.tsra.org/wp-content/uploads/2020/06/DM_v7.pdf
+- Sonoma County parcels (CDR_Parcels), FEMA National Flood Hazard Layer, Caltrans State Highway Network
+- Aerial imagery: USDA NAIP via USGS (public domain)
+
+## More
+
+- Repository: https://github.com/josediaz98/dreamhouse

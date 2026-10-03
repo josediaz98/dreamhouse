@@ -288,8 +288,11 @@ export function Landing() {
         <ParcelSheet state={lotsState} selectedId={openId} onSelect={showLot} />
       </Section>
 
-      <Section index="03" title="Guessing vs knowing">
-        <BeforeAfter eliminatedCount={lotsState.eliminatedCount} openQuestions={openQuestions} />
+      <Section index="03" title="“I don’t know” vs a sourced answer">
+        <BeforeAfter
+          eliminatedCount={lotsState.status === "ready" && lotsState.lots.length > 0 ? lotsState.eliminatedCount : null}
+          openQuestions={lotsState.status === "ready" && lotsState.lots.length > 0 ? openQuestions : null}
+        />
       </Section>
     </>
   );

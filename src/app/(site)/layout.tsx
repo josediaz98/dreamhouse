@@ -8,7 +8,7 @@ const SOURCES = [
   "FEMA National Flood Hazard Layer",
   "Caltrans State Highway Network",
   "Sea Ranch Design Manual (Oct 2013)",
-  "public listing pages",
+  "search-result summaries of public listings (2026-10-03)",
 ] as const;
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
@@ -20,7 +20,14 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
         <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 text-sm text-muted sm:px-6 md:grid-cols-[1fr_2fr]">
           <div className="flex flex-col gap-3">
             <Image src="/brand/wordmark.svg" alt="Lotline" width={120} height={24} unoptimized className="h-6 w-auto self-start" />
-            <p className="text-xs text-faint">Pay per call with Stripe MPP (HTTP 402). Sandbox mode.</p>
+            <p className="text-xs text-faint">
+              Pricing: <code className="font-mono">get_spec</code> and <code className="font-mono">check_buildability</code> are
+              metered at $0.50 per call in Stripe Billing (test mode, no real charges). Search and seller questions are free.
+            </p>
+            <p className="text-xs text-faint">
+              For agents: <a href="/llms.txt" className="underline underline-offset-2 hover:text-fg">/llms.txt</a> ·{" "}
+              MCP at <code className="font-mono">/mcp</code>
+            </p>
           </div>
           <div className="flex flex-col gap-3">
             <p>

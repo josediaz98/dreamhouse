@@ -14,6 +14,13 @@ Built for the Supabase Select 2026 hackathon (theme: build something agents want
 claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp
 ```
 
+For agents: [`/llms.txt`](https://dreamhouse-chi.vercel.app/llms.txt) describes the tools, inputs, pricing and limits in plain text.
+
+| | |
+|---|---|
+| ![Landing](docs/submission/images/01-hero.png) | ![Results](docs/submission/images/02-results.png) |
+| ![Checks for one lot](docs/submission/images/03-timber-ridge-checks.png) | ![Without and with Lotline](docs/submission/images/08-before-after.png) |
+
 ## The problem
 
 Listings are prose and PDFs. The rules that decide whether you can build (height limits, lot coverage, design review, septic, water, flood) live in a 52-page design manual, county GIS layers and the seller's head. A buyer, or the buyer's agent, learns "no" after a site visit. No source answers "can I build this here?" in a structured way.
