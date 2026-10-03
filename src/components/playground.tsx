@@ -13,13 +13,14 @@ import {
   checkBuildability,
   getSpec,
   listCalls,
+  listQuestions,
   USE_FIXTURES,
 } from "@/lib/client/api";
 import { formatCallUsd, formatMs, median, streetOf } from "@/lib/client/format";
 import type { LotView } from "@/lib/client/use-lots";
 import { DEFAULT_PROGRAM, FIELD_FOR_RULE } from "@/lib/client/types";
 import { DemoBadge } from "@/components/demo-badge";
-import { TracePanel } from "@/components/trace-panel";
+import { TracePanel, type TraceQuestion } from "@/components/trace-panel";
 import { VerdictList } from "@/components/verdict-list";
 
 type Phase = "idle" | "running" | "done" | "error";
@@ -70,7 +71,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
   const [query, setQuery] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
   const [events, setEvents] = useState<readonly TraceEvent[]>([]);
-  const [questions, setQuestions] = useState<Readonly<Record<string, string>>>({});
+  const [questions, setQuestions] = useState<Readonly<Record<string, TraceQuestion>>>({});
   const [summary, setSummary] = useState<string | null>(null);
   const [result, setResult] = useState<BuildabilityResult | null>(null);
   const [property, setProperty] = useState<Property | null>(null);
@@ -162,9 +163,36 @@ export function Playground({ lots, loading }: PlaygroundProps) {
       let drafted = final.checks.filter((c) => c.verdict === "unknown" && c.questionId !== null).length;
       // A lot already ruled out by a hard rule does not need seller questions.
       const worthAsking = final.overall !== "fail";
+      // Never ask twice for the same lot and field: reuse a question that is still open.
+      const openQuestions = worthAsking
+        ? await listQuestions("open").catch(() => [] as const)
+        : [];
+      if (!current()) return;
       for (const item of final.checks) {
         if (!worthAsking || item.verdict !== "unknown" || item.questionId !== null) continue;
         const eventId = `ask-${item.rule}`;
+        const existing = openQuestions.find(
+          (q) => q.propertyId === lot.id && q.fieldKey === FIELD_FOR_RULE[item.rule],
+        );
+        if (existing) {
+          drafted += 1;
+          final = {
+            ...final,
+            checks: final.checks.map((c) =>
+              c.rule === item.rule ? { ...c, questionId: existing.id } : c,
+            ),
+          };
+          setResult(final);
+          upsert({
+            id: eventId,
+            tool: "ask_seller",
+            status: "unknown",
+            label: `${FIELD_FOR_RULE[item.rule]} unknown · question already open`,
+            ms: null,
+          });
+          setQuestions((prev) => ({ ...prev, [eventId]: { text: existing.text, reused: true } }));
+          continue;
+        }
         upsert({ id: eventId, tool: "ask_seller", status: "running", label: FIELD_FOR_RULE[item.rule], ms: null });
         const text = `Can the seller confirm ${item.label.toLowerCase()}? ${item.detail}`;
         const asked = await timed(() =>
@@ -187,7 +215,10 @@ export function Playground({ lots, loading }: PlaygroundProps) {
           label: `${FIELD_FOR_RULE[item.rule]} unknown`,
           ms: asked.ms,
         });
-        setQuestions((prev) => ({ ...prev, [eventId]: asked.value.question.text }));
+        setQuestions((prev) => ({
+          ...prev,
+          [eventId]: { text: asked.value.question.text, reused: false },
+        }));
       }
 
       setSummary(
@@ -237,7 +268,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
               id="lot-input"
               value={query}
               onChange={(e) => setQuery(e.target.value)}
-              placeholder="35427 Sea Gate Rd"
+              placeholder={chips[0] ? streetOf(chips[0].item.property) : "Address or APN"}
               autoComplete="off"
               className="min-w-0 flex-1 rounded-md border border-line-strong bg-surface px-3 py-2.5 text-sm text-fg placeholder:text-muted"
             />

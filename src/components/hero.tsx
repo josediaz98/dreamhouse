@@ -3,7 +3,7 @@
 import { useState } from "react";
 
 const INSTALL_LINE =
-  "claude mcp add --transport http dreamhouse https://dreamhouse-chi.vercel.app/mcp";
+  "claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp";
 
 export function Hero() {
   const [copied, setCopied] = useState(false);

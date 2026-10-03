@@ -1,3 +1,5 @@
+import { DEFAULT_PROGRAM } from "@/lib/client/types";
+
 interface BeforeAfterProps {
   readonly eliminatedCount: number;
   readonly openQuestions: number;
@@ -9,7 +11,7 @@ export function BeforeAfter({ eliminatedCount, openQuestions }: BeforeAfterProps
       <div className="rounded-lg border border-fail-line bg-surface p-5">
         <h3 className="font-mono text-xs uppercase tracking-wide text-fail">Agent without spec</h3>
         <p className="mt-2 text-sm text-muted">
-          Prompt: “Can I build a 20 ft, 2-story house on this lot?”
+          Prompt: “Can I build a {DEFAULT_PROGRAM.heightFt} ft, {DEFAULT_PROGRAM.stories}-story house on this lot?”
         </p>
         <ul className="mt-4 flex list-disc flex-col gap-2 pl-5 text-sm text-fg marker:text-fail">
           <li>Reads the listing prose and answers with confidence.</li>
@@ -18,7 +20,7 @@ export function BeforeAfter({ eliminatedCount, openQuestions }: BeforeAfterProps
         </ul>
       </div>
       <div className="rounded-lg border border-pass-line bg-surface p-5">
-        <h3 className="font-mono text-xs uppercase tracking-wide text-pass">With DREAMHOUSE spec</h3>
+        <h3 className="font-mono text-xs uppercase tracking-wide text-pass">With Lotline spec</h3>
         <p className="mt-2 text-sm text-muted">Same prompt, same lots.</p>
         <p className="mt-4 text-sm text-fg">
           A conditional answer: {eliminatedCount} {eliminatedCount === 1 ? "lot" : "lots"} ruled

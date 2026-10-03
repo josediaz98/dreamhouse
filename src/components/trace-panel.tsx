@@ -15,10 +15,16 @@ const STATUS_TEXT: Record<TraceStatus, string> = {
   fail: "failed",
 };
 
+export interface TraceQuestion {
+  readonly text: string;
+  /** True when an open question already existed, so nothing new was drafted. */
+  readonly reused: boolean;
+}
+
 interface TracePanelProps {
   readonly events: readonly TraceEvent[];
-  /** Drafted seller question text, keyed by the trace event id that created it. */
-  readonly questions: Readonly<Record<string, string>>;
+  /** Seller question shown under the trace event that created or found it. */
+  readonly questions: Readonly<Record<string, TraceQuestion>>;
   /** Final line, set once the run is complete. */
   readonly summary: string | null;
 }
@@ -52,8 +58,10 @@ export function TracePanel({ events, questions, summary }: TracePanelProps) {
               </div>
               {question ? (
                 <p className="question-in ml-4 rounded unknown-edge bg-unknown-soft px-2.5 py-1.5 font-sans text-sm text-fg">
-                  <span className="font-mono text-xs text-unknown">Seller question drafted · </span>
-                  {question}
+                  <span className="font-mono text-xs text-unknown">
+                    {question.reused ? "Seller question already open · " : "Seller question drafted · "}
+                  </span>
+                  {question.text}
                 </p>
               ) : null}
             </li>

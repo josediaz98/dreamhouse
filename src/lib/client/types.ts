@@ -13,7 +13,7 @@ export type ChangeHandler = (event: ChangeEvent) => void;
 export const DEFAULT_PROGRAM = {
   footprintSqFt: 2155,
   deckSqFt: 400,
-  heightFt: 20,
+  heightFt: 26,
   stories: 2,
 } as const satisfies HouseProgram;
 
