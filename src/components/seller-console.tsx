@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState, type FormEvent } from "react";
 import type { Question } from "@/lib/contract";
 import { USE_FIXTURES, answerQuestion, listQuestions } from "@/lib/client/api";
+import { plainError } from "@/lib/client/errors";
 import { resetFixtureState } from "@/lib/client/fixture-store";
 import { streetOf } from "@/lib/client/format";
 import { subscribeToChanges } from "@/lib/client/realtime";
@@ -27,8 +28,7 @@ function QuestionCard({
   const [error, setError] = useState<string | null>(null);
   const inputId = `answer-${question.id}`;
 
-  async function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
+  async function send() {
     const text = answer.trim();
     if (text === "") return;
     setSubmitting(true);
@@ -37,9 +37,14 @@ function QuestionCard({
       await answerQuestion(question.id, text);
       onAnswered();
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Could not send the answer");
+      setError(plainError(e, "send the answer"));
       setSubmitting(false);
     }
+  }
+
+  function submit(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    void send();
   }
 
   return (
@@ -58,11 +63,11 @@ function QuestionCard({
           placeholder="Type the seller's answer"
           className="w-full rounded-md border border-line-strong bg-bg px-3 py-2 text-sm text-fg placeholder:text-muted"
         />
-        {error ? <ErrorBanner message={error} /> : null}
+        {error ? <ErrorBanner message={`${error} Your text is still here.`} onRetry={() => void send()} /> : null}
         <button
           type="submit"
           disabled={submitting || answer.trim() === ""}
-          className="self-start rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50"
+          className="self-start rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50 max-sm:min-h-11"
         >
           {submitting ? "Sending…" : "Send answer"}
         </button>
@@ -87,7 +92,7 @@ export function SellerConsole() {
           setError(null);
         })
         .catch((e: unknown) => {
-          if (!cancelled) setError(e instanceof Error ? e.message : "Could not load questions");
+          if (!cancelled) setError(plainError(e, "load the seller questions"));
         });
     };
     refetch();
@@ -102,7 +107,8 @@ export function SellerConsole() {
 
   const addressOf = (propertyId: string): string => {
     const lot = lotsState.lots.find(({ item }) => item.property.id === propertyId);
-    return lot ? lot.item.property.address : propertyId;
+    if (lot) return lot.item.property.address;
+    return lotsState.status === "loading" ? "Loading lot…" : "Lot not found";
   };
   const open = questions?.filter((q) => q.status === "open") ?? [];
   const answered = questions?.filter((q) => q.status === "answered") ?? [];
@@ -126,7 +132,7 @@ export function SellerConsole() {
               <button
                 type="button"
                 onClick={resetFixtureState}
-                className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised"
+                className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised max-sm:min-h-11"
               >
                 Reset demo
               </button>

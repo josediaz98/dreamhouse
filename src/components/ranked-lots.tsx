@@ -47,7 +47,7 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
             type="button"
             onClick={simulateSellerAnswer}
             disabled={simulating || openCount === 0}
-            className="rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised disabled:opacity-50"
+            className="rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised disabled:opacity-50 max-sm:min-h-11"
           >
             {simulating ? "Seller answering…" : "Simulate seller answer"}
           </button>
@@ -113,7 +113,7 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
       {!compact && openCount > 0 ? (
         <p className="text-sm text-muted">
           Open questions wait in the{" "}
-          <Link href="/seller" className="text-accent underline underline-offset-2">
+          <Link href="/seller" className="text-accent underline underline-offset-2 max-sm:inline-block max-sm:py-3">
             seller console
           </Link>
           . An answer re-ranks this list live.

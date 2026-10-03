@@ -44,6 +44,7 @@ export function BuyerDemo() {
           ref={playground}
           lots={lotsState.lots}
           loading={lotsState.status === "loading"}
+          failed={lotsState.status === "error"}
           onLotChange={setSelectedId}
         />
         <RankedLots state={lotsState} />

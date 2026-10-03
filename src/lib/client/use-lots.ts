@@ -4,6 +4,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { BuildabilityResult, HouseProgram, SearchItem, Verdict } from "@/lib/contract";
 import { checkBuildability, searchProperties } from "@/lib/client/api";
 import { VERDICT_RANK } from "@/lib/client/format";
+import { plainError } from "@/lib/client/errors";
 import { subscribeToChanges } from "@/lib/client/realtime";
 
 export interface LotView {
@@ -108,7 +109,7 @@ export function useLots(program: HouseProgram): LotsState {
           window.setTimeout(() => setChanges(new Map()), CHANGE_VISIBLE_MS);
         }
       } catch (e) {
-        setError(e instanceof Error ? e.message : "Could not load lots");
+        setError(plainError(e, "load the lots"));
         setStatus("error");
       }
     },

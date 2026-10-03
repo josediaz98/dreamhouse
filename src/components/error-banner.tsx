@@ -15,7 +15,7 @@ export function ErrorBanner({
         <button
           type="button"
           onClick={onRetry}
-          className="rounded border border-line-strong px-3 py-1 text-sm hover:bg-raised"
+          className="rounded border border-line-strong px-3 py-1 text-sm hover:bg-raised max-sm:min-h-11"
         >
           Retry
         </button>

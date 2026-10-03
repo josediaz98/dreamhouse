@@ -9,10 +9,10 @@ export function SiteHeader() {
           <Image src="/brand/wordmark.svg" alt="Lotline" width={170} height={34} priority unoptimized />
         </Link>
         <nav aria-label="Primary" className="flex items-center gap-4 whitespace-nowrap text-sm text-muted sm:gap-5">
-          <Link href="/#demo" className="hover:text-fg">
+          <Link href="/#demo" className="hover:text-fg max-sm:py-3">
             Live demo
           </Link>
-          <Link href="/seller" className="hover:text-fg">
+          <Link href="/seller" className="hover:text-fg max-sm:py-3">
             Seller console
           </Link>
         </nav>

@@ -4,6 +4,7 @@ import type { Verdict } from "@/lib/contract";
 import { CELL, commonScale, outlinePath } from "@/lib/client/parcel-layout";
 import type { LotsState } from "@/lib/client/use-lots";
 import { PARCEL_SHAPES, type ParcelShape } from "@/lib/parcel-shapes";
+import { ErrorBanner } from "@/components/error-banner";
 import { VerdictBadge } from "@/components/verdict-badge";
 
 const SCALE_BAR_FT = 200;
@@ -25,8 +26,8 @@ function Caption({ shape }: { readonly shape: ParcelShape }) {
   const acres = shape.acres === null ? null : `${Number(shape.acres.toFixed(2))} ac`;
   return (
     <span className="flex min-w-0 flex-col gap-0.5">
-      <span className="truncate font-mono text-sm text-fg">{shape.label}</span>
-      <span className="truncate font-mono text-xs text-muted">
+      <span className="break-words font-mono text-sm text-fg">{shape.label}</span>
+      <span className="break-words font-mono text-xs text-muted">
         {[shape.apn ? `APN ${shape.apn}` : "APN unresolved", acres].filter(Boolean).join(" · ")}
       </span>
     </span>
@@ -129,18 +130,18 @@ function Legend() {
         <g className="stroke-fg" strokeWidth={1.5} fill="none">
           <path d={`M${x0} ${y0}H${x0 + barWidth}M${x0} ${y0 - 5}V${y0 + 5}M${x0 + barWidth} ${y0 - 5}V${y0 + 5}`} />
         </g>
-        <text x={x0} y={y0 - 10} fontSize={12} className="fill-fg font-mono">
+        <text x={x0} y={y0 - 10} fontSize={15} className="fill-fg font-mono">
           {SCALE_BAR_FT} ft
         </text>
         <g className="stroke-fg" strokeWidth={1.5} fill="none">
           <path d="M200 70V28M200 28L194 40M200 28L206 40" />
         </g>
-        <text x={200} y={90} fontSize={13} textAnchor="middle" className="fill-fg font-mono">
+        <text x={200} y={90} fontSize={16} textAnchor="middle" className="fill-fg font-mono">
           N
         </text>
       </svg>
       <span className="font-mono text-sm text-fg">Scale</span>
-      <span className="text-xs text-muted">One scale for every lot. North is up.</span>
+      <span className="text-xs text-muted">{SCALE_BAR_FT} ft scale bar. One scale for every lot. North is up.</span>
     </div>
   );
 }
@@ -158,7 +159,10 @@ export function ParcelSheet({ state, selectedId, onSelect }: ParcelSheetProps) {
           Loading parcels…
         </p>
       ) : null}
-      {status !== "loading" && !hasMatch ? (
+      {status === "error" && lots.length === 0 && state.error ? (
+        <ErrorBanner message={state.error} onRetry={state.refresh} />
+      ) : null}
+      {status === "ready" && !hasMatch ? (
         <p className="rounded-lg border border-line bg-surface px-4 py-6 text-sm text-muted">
           Parcel outlines are not available for these lots.
         </p>

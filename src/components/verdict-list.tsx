@@ -14,7 +14,7 @@ function SourceLink({ source }: { readonly source: SourceRef }) {
       href={source.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="text-accent underline underline-offset-2"
+      className="text-accent underline underline-offset-2 max-sm:inline-block max-sm:py-2.5"
     >
       {text}
     </a>
@@ -38,7 +38,7 @@ export function VerdictList({ result }: { readonly result: BuildabilityResult })
               type="button"
               aria-pressed={view === option}
               onClick={() => setView(option)}
-              className={`px-3 py-1 font-mono ${view === option ? "bg-raised text-fg" : "text-muted"}`}
+              className={`px-3 py-1 font-mono max-sm:min-h-11 ${view === option ? "bg-raised text-fg" : "text-muted"}`}
             >
               {option === "json" ? "JSON" : "Readable"}
             </button>

@@ -16,10 +16,12 @@ import {
   listQuestions,
   USE_FIXTURES,
 } from "@/lib/client/api";
+import { plainError } from "@/lib/client/errors";
 import { formatCallUsd, formatMs, median, streetOf } from "@/lib/client/format";
 import type { LotView } from "@/lib/client/use-lots";
 import { DEFAULT_PROGRAM, FIELD_FOR_RULE } from "@/lib/client/types";
 import { DemoBadge } from "@/components/demo-badge";
+import { ErrorBanner } from "@/components/error-banner";
 import { TracePanel, type TraceQuestion } from "@/components/trace-panel";
 import { VerdictList } from "@/components/verdict-list";
 
@@ -70,12 +72,14 @@ export interface PlaygroundHandle {
 interface PlaygroundProps {
   readonly lots: readonly LotView[];
   readonly loading: boolean;
+  /** True when the lots could not be loaded: the banner below says so, no empty-state text. */
+  readonly failed?: boolean;
   readonly ref?: Ref<PlaygroundHandle>;
   /** Called with the id of the lot being checked. */
   readonly onLotChange?: (propertyId: string) => void;
 }
 
-export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps) {
+export function Playground({ lots, loading, failed = false, ref, onLotChange }: PlaygroundProps) {
   const [query, setQuery] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
   const [events, setEvents] = useState<readonly TraceEvent[]>([]);
@@ -84,6 +88,7 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
   const [result, setResult] = useState<BuildabilityResult | null>(null);
   const [property, setProperty] = useState<Property | null>(null);
   const [message, setMessage] = useState<string | null>(null);
+  const [lastQuery, setLastQuery] = useState<string | null>(null);
   const [timings, setTimings] = useState<readonly number[]>([]);
   const [medianCost, setMedianCost] = useState<number | null>(null);
   const runId = useRef(0);
@@ -111,6 +116,7 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
     setResult(null);
     setProperty(null);
     setMessage(null);
+    setLastQuery(null);
 
     upsert({ id: "resolve", tool: "resolve_parcel", status: "running", label: `"${rawQuery}"`, ms: null });
     const { value: match, ms: resolveMs } = timedSync(() => matchLot(rawQuery, lots));
@@ -250,7 +256,8 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
     } catch (e) {
       if (!current()) return;
       setPhase("error");
-      setMessage(e instanceof Error ? e.message : "The call failed");
+      setMessage(plainError(e, "run the check"));
+      setLastQuery(rawQuery);
     }
   }
 
@@ -297,7 +304,7 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
             <button
               type="submit"
               disabled={running || loading}
-              className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50"
+              className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50 max-sm:min-h-11"
             >
               {running ? "Checking…" : "Check buildability"}
             </button>
@@ -307,13 +314,16 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
             {loading && chips.length === 0 ? (
               <span className="text-xs text-muted">Loading lots…</span>
             ) : null}
+            {!loading && !failed && chips.length === 0 ? (
+              <span className="text-xs text-muted">No lots indexed yet.</span>
+            ) : null}
             {chips.map(({ item }) => (
               <button
                 key={item.property.id}
                 type="button"
                 disabled={running}
                 onClick={() => pick(item.property)}
-                className="rounded-full border border-line-strong px-3 py-1 text-xs text-fg hover:bg-raised disabled:opacity-50"
+                className="rounded-full border border-line-strong px-3 py-1 text-xs text-fg hover:bg-raised disabled:opacity-50 max-sm:min-h-11"
               >
                 {streetOf(item.property)}
               </button>
@@ -327,9 +337,10 @@ export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps)
         </form>
 
         {message ? (
-          <p role="alert" className="rounded-lg border border-fail-line bg-fail-soft px-4 py-3 text-sm text-fg">
-            {message}
-          </p>
+          <ErrorBanner
+            message={message}
+            onRetry={lastQuery === null ? undefined : () => void run(lastQuery)}
+          />
         ) : null}
 
         {result ? (

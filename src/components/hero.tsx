@@ -40,7 +40,7 @@ export function Hero() {
           <button
             type="button"
             onClick={copy}
-            className="shrink-0 rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised"
+            className="shrink-0 rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised max-sm:min-h-11"
           >
             {copied ? "Copied" : "Copy"}
           </button>

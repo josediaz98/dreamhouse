@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import type { CallReceipt } from "@/lib/contract";
 import { USE_FIXTURES, listCalls } from "@/lib/client/api";
+import { plainError } from "@/lib/client/errors";
 import { formatCallUsd } from "@/lib/client/format";
 import { DemoBadge } from "@/components/demo-badge";
 import { ErrorBanner } from "@/components/error-banner";
@@ -22,7 +23,7 @@ export function ReceiptsPanel({ version }: { readonly version: number }) {
         setError(null);
       })
       .catch((e: unknown) => {
-        if (!cancelled) setError(e instanceof Error ? e.message : "Could not load receipts");
+        if (!cancelled) setError(plainError(e, "load the call receipts"));
       });
     return () => {
       cancelled = true;
@@ -40,7 +41,7 @@ export function ReceiptsPanel({ version }: { readonly version: number }) {
           <button
             type="button"
             onClick={load}
-            className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised"
+            className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised max-sm:min-h-11"
           >
             Refresh
           </button>
