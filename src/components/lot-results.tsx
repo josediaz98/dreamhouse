@@ -3,16 +3,19 @@
 import { useState } from "react";
 import type { BuildabilityResult, TraceEvent, Verdict } from "@/lib/contract";
 import { formatAcres, formatUsd, streetOf, VERDICT_RANK } from "@/lib/client/format";
-import type { LotChange, LotView } from "@/lib/client/use-lots";
+import type { LotChange, LotView, LotsState } from "@/lib/client/use-lots";
 import { CopyButton } from "@/components/copy-button";
 import { DemoBadge } from "@/components/demo-badge";
 import { ErrorBanner } from "@/components/error-banner";
 import { LotAerial } from "@/components/lot-aerial";
+import { ParcelSheet } from "@/components/parcel-sheet";
 import { TracePanel, type TraceQuestion } from "@/components/trace-panel";
 import { VerdictBadge } from "@/components/verdict-badge";
 import { VerdictList } from "@/components/verdict-list";
 
-type ResultsView = "results" | "json";
+type ResultsView = "results" | "map" | "json";
+
+const VIEW_LABEL = { results: "Results", map: "Map", json: "JSON" } as const satisfies Record<ResultsView, string>;
 
 export type ResultsStatus = "loading" | "ready" | "error" | "empty";
 
@@ -40,6 +43,10 @@ interface LotResultsProps {
   /** Shown for the empty state; null when there was no budget to remove. */
   readonly budget: number | null;
   readonly onRemoveBudget: () => void;
+  /** Live lots for the Map view; the Map option is hidden when absent. */
+  readonly map?: LotsState;
+  /** A parcel was clicked on the map: expand and scroll to that lot's card. */
+  readonly onMapSelect?: (propertyId: string) => void;
 }
 
 function lowerFirst(text: string): string {
@@ -198,14 +205,16 @@ function SkeletonCard() {
 
 function Segmented({
   value,
+  options,
   onChange,
 }: {
   readonly value: ResultsView;
+  readonly options: readonly ResultsView[];
   readonly onChange: (next: ResultsView) => void;
 }) {
   return (
     <div role="group" aria-label="Results view" className="flex rounded-md border border-line bg-bg p-0.5">
-      {(["results", "json"] as const).map((option) => (
+      {options.map((option) => (
         <button
           key={option}
           type="button"
@@ -215,7 +224,7 @@ function Segmented({
             value === option ? "bg-raised text-fg" : "text-muted hover:text-fg"
           }`}
         >
-          {option === "json" ? "JSON" : "Results"}
+          {VIEW_LABEL[option]}
         </button>
       ))}
     </div>
@@ -238,6 +247,8 @@ export function LotResults({
   onRetry,
   budget,
   onRemoveBudget,
+  map,
+  onMapSelect,
 }: LotResultsProps) {
   const [view, setView] = useState<ResultsView>("results");
   const [traceOpen, setTraceOpen] = useState(false);
@@ -267,7 +278,13 @@ export function LotResults({
             {ready ? counts.join(" · ") : status === "loading" ? "Checking every lot against your house…" : " "}
           </p>
         </div>
-        {ready ? <Segmented value={view} onChange={setView} /> : null}
+        {ready ? (
+          <Segmented
+            value={view}
+            options={map ? ["results", "map", "json"] : ["results", "json"]}
+            onChange={setView}
+          />
+        ) : null}
       </div>
 
       {ready && trace.length > 0 ? (
@@ -331,6 +348,22 @@ export function LotResults({
           <pre className="max-h-[32rem] overflow-auto px-4 py-3 font-mono text-xs leading-5 text-fg">
             {jsonText}
           </pre>
+        </div>
+      ) : null}
+
+      {ready && view === "map" && map ? (
+        <div className="rounded-lg border border-line bg-bg/40 p-3 sm:p-4">
+          <p className="mb-3 font-mono text-xs text-muted">
+            Parcels at one scale · colour is the live verdict · dashed edge means unknown · select a parcel to open its checks
+          </p>
+          <ParcelSheet
+            state={map}
+            selectedId={openId}
+            onSelect={(id) => {
+              setView("results");
+              onMapSelect?.(id);
+            }}
+          />
         </div>
       ) : null}
 
