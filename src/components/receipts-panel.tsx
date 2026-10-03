@@ -40,7 +40,7 @@ export function ReceiptsPanel({ version }: { readonly version: number }) {
           <button
             type="button"
             onClick={load}
-            className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover-surface-2"
+            className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised"
           >
             Refresh
           </button>

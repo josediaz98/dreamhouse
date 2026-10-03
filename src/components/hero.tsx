@@ -29,7 +29,7 @@ export function Hero() {
       <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:items-stretch">
         <a
           href="#demo"
-          className="inline-flex items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-fg hover-accent-strong"
+          className="inline-flex items-center justify-center rounded-md bg-accent px-5 py-3 text-sm font-semibold text-accent-ink hover:bg-accent-strong"
         >
           Try the live demo
         </a>
@@ -40,7 +40,7 @@ export function Hero() {
           <button
             type="button"
             onClick={copy}
-            className="shrink-0 rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover-surface-2"
+            className="shrink-0 rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised"
           >
             {copied ? "Copied" : "Copy"}
           </button>

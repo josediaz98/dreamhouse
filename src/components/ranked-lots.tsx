@@ -47,7 +47,7 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
             type="button"
             onClick={simulateSellerAnswer}
             disabled={simulating || openCount === 0}
-            className="rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover-surface-2 disabled:opacity-50"
+            className="rounded border border-line-strong px-3 py-1.5 text-xs text-fg hover:bg-raised disabled:opacity-50"
           >
             {simulating ? "Seller answering…" : "Simulate seller answer"}
           </button>

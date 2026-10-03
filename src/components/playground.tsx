@@ -244,7 +244,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
             <button
               type="submit"
               disabled={running || loading}
-              className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-fg hover-accent-strong disabled:opacity-50"
+              className="rounded-md bg-accent px-5 py-2.5 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50"
             >
               {running ? "Checking…" : "Check buildability"}
             </button>
@@ -260,7 +260,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
                 type="button"
                 disabled={running}
                 onClick={() => pick(item.property)}
-                className="rounded-full border border-line-strong px-3 py-1 text-xs text-fg hover-surface-2 disabled:opacity-50"
+                className="rounded-full border border-line-strong px-3 py-1 text-xs text-fg hover:bg-raised disabled:opacity-50"
               >
                 {streetOf(item.property)}
               </button>
@@ -274,7 +274,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
         </form>
 
         {message ? (
-          <p role="alert" className="rounded-lg border border-fail bg-fail-soft px-4 py-3 text-sm text-fg">
+          <p role="alert" className="rounded-lg border border-fail-line bg-fail-soft px-4 py-3 text-sm text-fg">
             {message}
           </p>
         ) : null}

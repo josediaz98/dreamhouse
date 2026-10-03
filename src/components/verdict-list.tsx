@@ -38,7 +38,7 @@ export function VerdictList({ result }: { readonly result: BuildabilityResult })
               type="button"
               aria-pressed={view === option}
               onClick={() => setView(option)}
-              className={`px-3 py-1 font-mono ${view === option ? "bg-surface-2 text-fg" : "text-muted"}`}
+              className={`px-3 py-1 font-mono ${view === option ? "bg-raised text-fg" : "text-muted"}`}
             >
               {option === "json" ? "JSON" : "Readable"}
             </button>

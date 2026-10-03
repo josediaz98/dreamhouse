@@ -3,7 +3,7 @@ import "./site-theme.css";
 
 export default function SiteLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="site-root flex min-h-screen flex-col bg-page font-sans text-fg">
+    <div className="site-root flex min-h-screen flex-col bg-bg font-sans text-fg">
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <footer className="border-t border-line">

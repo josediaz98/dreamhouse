@@ -43,7 +43,7 @@ function QuestionCard({
   }
 
   return (
-    <li className="rounded-lg border border-unknown bg-surface p-4">
+    <li className="rounded-lg unknown-edge bg-surface p-4">
       <p className="text-sm font-medium text-fg">{address}</p>
       <p className="mt-0.5 font-mono text-xs text-unknown">{question.fieldKey} · unknown</p>
       <form onSubmit={submit} className="mt-3 flex flex-col gap-2">
@@ -56,13 +56,13 @@ function QuestionCard({
           onChange={(e) => setAnswer(e.target.value)}
           rows={2}
           placeholder="Type the seller's answer"
-          className="w-full rounded-md border border-line-strong bg-page px-3 py-2 text-sm text-fg placeholder:text-muted"
+          className="w-full rounded-md border border-line-strong bg-bg px-3 py-2 text-sm text-fg placeholder:text-muted"
         />
         {error ? <ErrorBanner message={error} /> : null}
         <button
           type="submit"
           disabled={submitting || answer.trim() === ""}
-          className="self-start rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-fg hover-accent-strong disabled:opacity-50"
+          className="self-start rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50"
         >
           {submitting ? "Sending…" : "Send answer"}
         </button>
@@ -126,7 +126,7 @@ export function SellerConsole() {
               <button
                 type="button"
                 onClick={resetFixtureState}
-                className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover-surface-2"
+                className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised"
               >
                 Reset demo
               </button>
@@ -166,7 +166,7 @@ export function SellerConsole() {
               {answered.map((question) => (
                 <li
                   key={question.id}
-                  className="rounded-lg border border-pass bg-pass-soft px-4 py-3 text-sm"
+                  className="rounded-lg border border-pass-line bg-pass-soft px-4 py-3 text-sm"
                 >
                   <p className="font-medium text-fg">
                     {streetOf({ address: addressOf(question.propertyId) })} ·{" "}

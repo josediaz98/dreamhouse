@@ -4,7 +4,6 @@ import { DEFAULT_PROGRAM } from "@/lib/client/types";
 import { useLots } from "@/lib/client/use-lots";
 import { BeforeAfter } from "@/components/before-after";
 import { CountersStrip } from "@/components/counters-strip";
-import { ErrorBanner } from "@/components/error-banner";
 import { Playground } from "@/components/playground";
 import { RankedLots } from "@/components/ranked-lots";
 import { ReceiptsPanel } from "@/components/receipts-panel";
@@ -37,9 +36,6 @@ export function BuyerDemo() {
   return (
     <>
       <Section id="demo" title="Ask the lot">
-        {lotsState.status === "error" && lotsState.error ? (
-          <ErrorBanner message={lotsState.error} onRetry={lotsState.refresh} />
-        ) : null}
         <Playground lots={lotsState.lots} loading={lotsState.status === "loading"} />
         <RankedLots state={lotsState} />
       </Section>

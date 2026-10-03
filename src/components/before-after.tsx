@@ -6,7 +6,7 @@ interface BeforeAfterProps {
 export function BeforeAfter({ eliminatedCount, openQuestions }: BeforeAfterProps) {
   return (
     <div className="grid gap-4 md:grid-cols-2">
-      <div className="rounded-lg border border-fail bg-surface p-5">
+      <div className="rounded-lg border border-fail-line bg-surface p-5">
         <h3 className="font-mono text-xs uppercase tracking-wide text-fail">Agent without spec</h3>
         <p className="mt-2 text-sm text-muted">
           Prompt: “Can I build a 20 ft, 2-story house on this lot?”
@@ -17,7 +17,7 @@ export function BeforeAfter({ eliminatedCount, openQuestions }: BeforeAfterProps
           <li>Cites no source, so nothing can be checked.</li>
         </ul>
       </div>
-      <div className="rounded-lg border border-pass bg-surface p-5">
+      <div className="rounded-lg border border-pass-line bg-surface p-5">
         <h3 className="font-mono text-xs uppercase tracking-wide text-pass">With DREAMHOUSE spec</h3>
         <p className="mt-2 text-sm text-muted">Same prompt, same lots.</p>
         <p className="mt-4 text-sm text-fg">

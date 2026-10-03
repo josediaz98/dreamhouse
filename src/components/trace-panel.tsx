@@ -51,7 +51,7 @@ export function TracePanel({ events, questions, summary }: TracePanelProps) {
                 <span className="shrink-0 tabular-nums text-muted">{formatMs(event.ms)}</span>
               </div>
               {question ? (
-                <p className="question-in ml-4 rounded border border-unknown bg-unknown-soft px-2.5 py-1.5 font-sans text-sm text-fg">
+                <p className="question-in ml-4 rounded unknown-edge bg-unknown-soft px-2.5 py-1.5 font-sans text-sm text-fg">
                   <span className="font-mono text-xs text-unknown">Seller question drafted · </span>
                   {question}
                 </p>
