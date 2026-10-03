@@ -9,7 +9,8 @@
     "lint": "eslint",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "demo:reset": "tsx --env-file=.env.local scripts/demo-reset.ts"
+    "demo:reset": "tsx --env-file=.env.local scripts/demo-reset.ts",
+    "demo:check": "tsx --env-file=.env.local scripts/demo-reset.ts --check"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",

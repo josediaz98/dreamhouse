@@ -44,6 +44,9 @@ pnpm exec tsx --env-file=.env.local scripts/reset-demo.ts --apply  # questions o
 pnpm exec tsx --env-file=.env.local scripts/ingest.ts              # restores spec_fields and seeds the open questions
 ```
 
+Between recordings: `pnpm demo:reset` does the three steps above (scoped), prints per-lot open/answered counts and exits 1 if the final state is not the clean one.
+Right before recording: `pnpm demo:check` verifies without resetting (exit 0 = clean: 2 lots fail with 0 questions, 4 lots unknown with exactly the flood, septic and water questions open, 0 answered, 0 seller fields).
+
 Realtime: each answer fires `spec_fields UPDATE` and `questions UPDATE` (verified with the anon key).
 
 ## Buyer agent (`POST /api/agent`)
