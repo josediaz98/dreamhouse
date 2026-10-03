@@ -20,7 +20,9 @@ Deadline: submit by **5:15 PM PDT**. Freeze of features: 3:30 PM. Script: `docs/
 | 4:40–5:00 | Jose + Claude | Upload video and 8 images, final description, flip repo to public |
 | 5:10 | Jose | Press Submit Entry. 5:15 is the target; 5:30 is the hard limit |
 
-## Host and Stripe (decision needed)
+## Host and Stripe (decided: option A, 13:30)
+
+Done: both vars are in Vercel Production, `main` redeployed, and a production `check_buildability` call (200 in 1.8 s, no 402) moved the sandbox invoice from 1 to 2 × Lotline tool call. Record everything on `https://dreamhouse-chi.vercel.app`.
 
 Metering only fires on a host that has `STRIPE_SECRET_KEY` and `STRIPE_METER_CUSTOMER_ID`. Today only the local dev environment has them.
 
