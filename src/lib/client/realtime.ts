@@ -3,7 +3,7 @@
  * (INSERT, UPDATE). Fixture mode: the fixture store notifies same-tab and cross-tab.
  * Needs NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in real mode.
  */
-import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import { createClient, type RealtimeChannel, type SupabaseClient } from "@supabase/supabase-js";
 import { TABLES } from "@/lib/contract";
 import { USE_FIXTURES } from "@/lib/client/api";
 import { subscribeFixtureChanges } from "@/lib/client/fixture-store";
@@ -26,6 +26,24 @@ function readPropertyId(row: unknown): string | null {
   return typeof value === "string" ? value : null;
 }
 
+/** One shared channel for the whole page: supabase-js rejects callbacks added after subscribe(). */
+const handlers = new Set<ChangeHandler>();
+let sharedChannel: RealtimeChannel | null = null;
+
+function openChannel(supabase: SupabaseClient): RealtimeChannel {
+  const channel = supabase.channel("dreamhouse-live");
+  for (const table of [TABLES.specFields, TABLES.questions]) {
+    for (const event of ["INSERT", "UPDATE"] as const) {
+      channel.on("postgres_changes", { event, schema: "public", table }, (payload) => {
+        const change = { table, propertyId: readPropertyId(payload.new) };
+        handlers.forEach((handler) => handler(change));
+      });
+    }
+  }
+  channel.subscribe();
+  return channel;
+}
+
 export function subscribeToChanges(onChange: ChangeHandler): () => void {
   if (USE_FIXTURES) return subscribeFixtureChanges(onChange);
 
@@ -35,19 +53,13 @@ export function subscribeToChanges(onChange: ChangeHandler): () => void {
     return () => undefined;
   }
 
-  const channel = supabase.channel("dreamhouse-live");
-  for (const table of [TABLES.specFields, TABLES.questions]) {
-    for (const event of ["INSERT", "UPDATE"] as const) {
-      channel.on("postgres_changes", { event, schema: "public", table }, (payload) => {
-        onChange({
-          table,
-          propertyId: readPropertyId(payload.new),
-        });
-      });
-    }
-  }
-  channel.subscribe();
+  handlers.add(onChange);
+  sharedChannel ??= openChannel(supabase);
   return () => {
-    void supabase.removeChannel(channel);
+    handlers.delete(onChange);
+    if (handlers.size === 0 && sharedChannel) {
+      void supabase.removeChannel(sharedChannel);
+      sharedChannel = null;
+    }
   };
 }

@@ -64,6 +64,7 @@ export function VerdictList({ result }: { readonly result: BuildabilityResult })
               <p className="text-sm text-muted">{check.detail}</p>
               <p className="text-xs text-muted">
                 Source:{" "}
+                {check.sources.length === 0 ? <span>none recorded</span> : null}
                 {check.sources.map((source, index) => (
                   <span key={`${source.label}-${index}`}>
                     {index > 0 ? ", " : null}

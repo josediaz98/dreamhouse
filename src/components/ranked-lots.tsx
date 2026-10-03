@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { USE_FIXTURES, answerQuestion, listQuestions } from "@/lib/client/api";
-import { formatUsd, streetOf } from "@/lib/client/format";
+import { formatAcres, formatUsd, streetOf } from "@/lib/client/format";
 import { DEFAULT_PROGRAM } from "@/lib/client/types";
 import type { LotsState } from "@/lib/client/use-lots";
 import { DemoBadge } from "@/components/demo-badge";
@@ -73,7 +73,7 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
           const ruledOut = item.overall === "fail";
           return (
             <li
-              key={`${item.property.id}-${change ? `${change.from}-${change.to}` : "static"}`}
+              key={`${item.property.id}-${change ? `${change.from}-${change.to}-${change.unknownTo}` : "static"}`}
               className={`flex flex-col gap-1.5 rounded-lg border bg-surface px-4 py-3 ${
                 change ? "row-flash border-accent" : "border-line"
               } ${ruledOut ? "opacity-70" : ""}`}
@@ -85,7 +85,7 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
                 {item.overall ? <VerdictBadge verdict={item.overall} /> : null}
               </div>
               <p className="font-mono text-xs text-muted">
-                {formatUsd(item.property.priceUsd)} · {item.property.acres ?? "n/a"} ac ·{" "}
+                {formatUsd(item.property.priceUsd)} · {formatAcres(item.property.acres)} ·{" "}
                 {item.knownCount} known / {item.unknownCount} unknown
                 {item.property.isFixture ? (
                   <>
@@ -96,7 +96,10 @@ export function RankedLots({ state, compact = false }: { readonly state: LotsSta
               </p>
               {change ? (
                 <p className="text-sm font-medium text-fg">
-                  Seller answered: {change.from ?? "new"} → {change.to ?? "n/a"}
+                  Seller answered:{" "}
+                  {change.from !== change.to
+                    ? `${change.from ?? "new"} → ${change.to ?? "n/a"}`
+                    : `${change.unknownFrom} → ${change.unknownTo} unknown`}
                 </p>
               ) : null}
               {ruledOut && failing ? (

@@ -14,6 +14,10 @@ export function formatCallUsd(value: number): string {
   return `$${value.toFixed(3)}`;
 }
 
+export function formatAcres(value: number | null): string {
+  return value === null ? "n/a ac" : `${Number(value.toFixed(2))} ac`;
+}
+
 export function formatMs(ms: number | null): string {
   if (ms === null) return "…";
   return ms < 1 ? "<1 ms" : `${Math.round(ms)} ms`;

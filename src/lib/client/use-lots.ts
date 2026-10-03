@@ -14,6 +14,8 @@ export interface LotView {
 export interface LotChange {
   readonly from: Verdict | null;
   readonly to: Verdict | null;
+  readonly unknownFrom: number;
+  readonly unknownTo: number;
 }
 
 export interface LotsState {
@@ -48,7 +50,9 @@ export function useLots(program: HouseProgram): LotsState {
   const [error, setError] = useState<string | null>(null);
   const [version, setVersion] = useState(0);
   const [changes, setChanges] = useState<ReadonlyMap<string, LotChange>>(new Map());
-  const previous = useRef<ReadonlyMap<string, Verdict | null>>(new Map());
+  const previous = useRef<ReadonlyMap<string, { overall: Verdict | null; unknown: number }>>(
+    new Map(),
+  );
   const resultCache = useRef<Map<string, BuildabilityResult>>(new Map());
 
   const load = useCallback(
@@ -75,11 +79,24 @@ export function useLots(program: HouseProgram): LotsState {
         const diff = new Map<string, LotChange>();
         if (previous.current.size > 0) {
           for (const { item } of next) {
-            const before = previous.current.get(item.property.id) ?? null;
-            if (before !== item.overall) diff.set(item.property.id, { from: before, to: item.overall });
+            const before = previous.current.get(item.property.id);
+            if (!before) continue;
+            if (before.overall !== item.overall || before.unknown !== item.unknownCount) {
+              diff.set(item.property.id, {
+                from: before.overall,
+                to: item.overall,
+                unknownFrom: before.unknown,
+                unknownTo: item.unknownCount,
+              });
+            }
           }
         }
-        previous.current = new Map(next.map(({ item }) => [item.property.id, item.overall]));
+        previous.current = new Map(
+          next.map(({ item }) => [
+            item.property.id,
+            { overall: item.overall, unknown: item.unknownCount },
+          ]),
+        );
 
         setLots(next);
         setEliminatedCount(search.eliminatedCount);
