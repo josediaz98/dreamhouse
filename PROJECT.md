@@ -18,7 +18,7 @@
 | Why would an agent choose this over what it has today? | Listings are prose and PDFs. Rules (height, coverage, setbacks, fire zone, septic) sit in a 52-page manual and county GIS. No source answers "can I build this here?" in structured form |
 | Out of scope today | 3D design, financing, legal, professional network, live scraping. These go on the vision slide only |
 | Repo URL | https://github.com/josediaz98/dreamhouse (private for now; flip to public before submitting) |
-| Demo URL | _TBD (deploy early — required field)_ |
+| Demo URL | https://dreamhouse-chi.vercel.app (Vercel project `dreamhouse`, account josediazalen-3449; production branch `main`) |
 
 ## 1. Rules and scoring
 
@@ -199,7 +199,7 @@ Prefer a screen recording of the deployed URL over local. Record a backup take.
 | ✅ | Create GitHub repo | Jose | Done, private. **Flip to public before submitting.** Work on branch `dev` (a hook blocks edits on `main`) |
 | ⬜ | Supabase project (+ Compute alpha access) | | Ask Matt. Compute is optional for this build |
 | ⬜ | Claim credits: Claude, Vercel, Gemini, Stripe | | Check email from the hackathon address |
-| ⬜ | Deploy empty Next.js app on Vercel | | Gives Demo URL |
+| ✅ | Deploy empty Next.js app on Vercel | Jose | https://dreamhouse-chi.vercel.app returns 200. Deploy with `vercel deploy --prod --yes` or merge `dev` → `main` |
 | ⬜ | Save draft on submission form | | |
 | ⬜ | Snapshot 6–8 Sea Ranch lot listings by hand (save as files) | | Century 21 Select Group page; no live scraping |
 | ⬜ | Confirm the current Design Manual edition and pdftotext it | | Seed `rules` table |
