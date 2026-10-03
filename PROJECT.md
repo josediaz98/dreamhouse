@@ -197,7 +197,7 @@ Prefer a screen recording of the deployed URL over local. Record a backup take.
 |---|---|---|---|
 | ✅ | Lock idea, fill §0 | Jose | Sea Ranch, spec layer + buyer agent |
 | ✅ | Create GitHub repo | Jose | Done, private. **Flip to public before submitting.** Work on branch `dev` (a hook blocks edits on `main`) |
-| ⬜ | Supabase project (+ Compute alpha access) | | Ask Matt. Compute is optional for this build |
+| ✅ | Supabase project `dreamhouse`, ref `qpqorehruvwwpzhaqvef`, org `dreamhouse` (`racuagumnmbpxvygdkvp`, separate from LAFA), region us-west-1, ACTIVE_HEALTHY | Jose | Env vars `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_PROJECT_REF`, `SUPABASE_SERVICE_ROLE_KEY` are in Vercel (production + development). Use `vercel env pull .env.local`. DB password is only in the main worktree `.env.local` (coordinator never reads it); migrations go through `supabase link --project-ref qpqorehruvwwpzhaqvef` + `supabase db query --linked`. Compute alpha access not requested; optional |
 | ✅ | Stripe CLI 1.53.0 installed, logged in; test-mode sandbox `acct_1TBSXZEeUE11jyNc` ("New business sandbox", josediazalen@gmail.com, US) | Jose | `livemode: false`. Keys stay in the CLI profile; never print them |
 | ⬜ | Claim credits: Claude (jose@121labs.ai org), Vercel, Gemini, Stripe | | Check email from the hackathon address |
 | ✅ | Deploy empty Next.js app on Vercel | Jose | https://dreamhouse-chi.vercel.app returns 200. Deploy with `vercel deploy --prod --yes` or merge `dev` → `main` |
