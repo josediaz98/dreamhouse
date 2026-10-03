@@ -1,79 +1,44 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState, type FormEvent } from "react";
+import { useEffect, useState } from "react";
 import type { Question } from "@/lib/contract";
-import { USE_FIXTURES, answerQuestion, listQuestions } from "@/lib/client/api";
+import { USE_FIXTURES, listQuestions } from "@/lib/client/api";
 import { plainError } from "@/lib/client/errors";
 import { resetFixtureState } from "@/lib/client/fixture-store";
-import { streetOf } from "@/lib/client/format";
 import { subscribeToChanges } from "@/lib/client/realtime";
 import { DEFAULT_PROGRAM } from "@/lib/client/types";
-import { useLots } from "@/lib/client/use-lots";
+import { useLots, type LotView } from "@/lib/client/use-lots";
 import { DemoBadge } from "@/components/demo-badge";
 import { ErrorBanner } from "@/components/error-banner";
-import { RankedLots } from "@/components/ranked-lots";
+import { BuyerView } from "@/components/seller/buyer-view";
+import { QuestionGroup, type QuestionGroupData } from "@/components/seller/question-group";
 
-function QuestionCard({
-  question,
-  address,
-  onAnswered,
-}: {
-  readonly question: Question;
-  readonly address: string;
-  readonly onAnswered: () => void;
-}) {
-  const [answer, setAnswer] = useState("");
-  const [submitting, setSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const inputId = `answer-${question.id}`;
-
-  async function send() {
-    const text = answer.trim();
-    if (text === "") return;
-    setSubmitting(true);
-    setError(null);
-    try {
-      await answerQuestion(question.id, text);
-      onAnswered();
-    } catch (e) {
-      setError(plainError(e, "send the answer"));
-      setSubmitting(false);
-    }
+/** One group per lot, in API order; lots with no open question go last. */
+function groupQuestions(
+  questions: readonly Question[],
+  lots: readonly LotView[],
+  loading: boolean,
+): QuestionGroupData[] {
+  const byLot = new Map<string, Question[]>();
+  for (const q of questions) {
+    const list = byLot.get(q.propertyId);
+    if (list) list.push(q);
+    else byLot.set(q.propertyId, [q]);
   }
-
-  function submit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    void send();
-  }
-
-  return (
-    <li className="rounded-lg unknown-edge bg-surface p-4">
-      <p className="text-sm font-medium text-fg">{address}</p>
-      <p className="mt-0.5 font-mono text-xs text-unknown">{question.fieldKey} · unknown</p>
-      <form onSubmit={submit} className="mt-3 flex flex-col gap-2">
-        <label htmlFor={inputId} className="text-sm text-fg">
-          {question.text}
-        </label>
-        <textarea
-          id={inputId}
-          value={answer}
-          onChange={(e) => setAnswer(e.target.value)}
-          rows={2}
-          placeholder="Type the seller's answer"
-          className="w-full rounded-md border border-line-strong bg-bg px-3 py-2 text-sm text-fg placeholder:text-muted"
-        />
-        {error ? <ErrorBanner message={`${error} Your text is still here.`} onRetry={() => void send()} /> : null}
-        <button
-          type="submit"
-          disabled={submitting || answer.trim() === ""}
-          className="self-start rounded-md bg-accent px-4 py-2 text-sm font-semibold text-accent-ink hover:bg-accent-strong disabled:opacity-50 max-sm:min-h-11"
-        >
-          {submitting ? "Sending…" : "Send answer"}
-        </button>
-      </form>
-    </li>
-  );
+  const groups = [...byLot.entries()].map(([propertyId, list]): QuestionGroupData => {
+    const lot = lots.find(({ item }) => item.property.id === propertyId);
+    const [street, ...rest] = lot ? lot.item.property.address.split(",") : [];
+    return {
+      propertyId,
+      street: street?.trim() || (loading ? "Loading lot…" : "Lot not in the current search"),
+      locality: rest.length > 0 ? rest.join(",").trim() : null,
+      verdict: lot?.result?.overall ?? lot?.item.overall ?? "unknown",
+      questions: list,
+    };
+  });
+  const hasOpen = (g: QuestionGroupData) => g.questions.some((q) => q.status === "open");
+  return [...groups.filter(hasOpen), ...groups.filter((g) => !hasOpen(g))];
 }
 
 export function SellerConsole() {
@@ -104,90 +69,65 @@ export function SellerConsole() {
   }, [reload]);
 
   const load = () => setReload((n) => n + 1);
-
-  const addressOf = (propertyId: string): string => {
-    const lot = lotsState.lots.find(({ item }) => item.property.id === propertyId);
-    if (lot) return lot.item.property.address;
-    return lotsState.status === "loading" ? "Loading lot…" : "Lot not found";
-  };
-  const open = questions?.filter((q) => q.status === "open") ?? [];
-  const answered = questions?.filter((q) => q.status === "answered") ?? [];
+  const groups = groupQuestions(questions ?? [], lotsState.lots, lotsState.status === "loading");
+  const openTotal = questions?.filter((q) => q.status === "open").length ?? 0;
 
   return (
-    <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-10 sm:px-6 lg:grid-cols-2">
-      <section aria-labelledby="open-heading" className="flex min-w-0 flex-col gap-4">
-        <div className="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h1 id="open-heading" className="text-2xl font-semibold tracking-tight text-fg">
-              Seller console
-            </h1>
-            <p className="mt-1 text-sm text-muted">
-              Questions agents could not answer from the listing or the rules. Your answer updates
-              the spec and re-ranks the buyer view.
-            </p>
-          </div>
-          {USE_FIXTURES ? (
-            <div className="flex items-center gap-2">
-              <DemoBadge />
-              <button
-                type="button"
-                onClick={resetFixtureState}
-                className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised max-sm:min-h-11"
-              >
-                Reset demo
-              </button>
-            </div>
-          ) : null}
-        </div>
-
-        {error ? <ErrorBanner message={error} onRetry={load} /> : null}
-        {questions === null && !error ? (
-          <p className="text-sm text-muted">Loading questions…</p>
-        ) : null}
-        {questions !== null && open.length === 0 ? (
-          <p className="rounded-lg border border-line bg-surface px-4 py-6 text-sm text-muted">
-            No open questions. Run a lot on the{" "}
-            <Link href="/#demo" className="text-accent underline underline-offset-2">
-              buyer page
-            </Link>{" "}
-            to draft some.
+    <div className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:py-12">
+      <header className="mb-8 flex flex-wrap items-end justify-between gap-4">
+        <div className="max-w-2xl">
+          <h1 className="text-3xl text-fg sm:text-4xl">Seller console</h1>
+          <p className="mt-2 text-base text-muted">
+            Questions agents could not answer from the listing or the rules. Your answer updates the spec and
+            re-ranks the buyer&apos;s list.
           </p>
-        ) : null}
-
-        <ul className="flex flex-col gap-3">
-          {open.map((question) => (
-            <QuestionCard
-              key={question.id}
-              question={question}
-              address={addressOf(question.propertyId)}
-              onAnswered={load}
-            />
-          ))}
-        </ul>
-
-        {answered.length > 0 ? (
-          <div className="flex flex-col gap-2">
-            <h2 className="font-mono text-xs uppercase tracking-wide text-muted">Answered</h2>
-            <ul className="flex flex-col gap-2">
-              {answered.map((question) => (
-                <li
-                  key={question.id}
-                  className="rounded-lg border border-pass-line bg-pass-soft px-4 py-3 text-sm"
-                >
-                  <p className="font-medium text-fg">
-                    {streetOf({ address: addressOf(question.propertyId) })} ·{" "}
-                    <span className="font-mono text-xs text-pass">{question.fieldKey} → known</span>
-                  </p>
-                  <p className="mt-1 break-words text-muted">{question.answer}</p>
-                </li>
-              ))}
-            </ul>
+          <p className="mt-2 font-mono text-xs text-faint">Demo: answers are entered by the presenter.</p>
+        </div>
+        {USE_FIXTURES ? (
+          <div className="flex items-center gap-2">
+            <DemoBadge />
+            <button
+              type="button"
+              onClick={resetFixtureState}
+              className="rounded border border-line-strong px-2.5 py-1 text-xs text-fg hover:bg-raised max-sm:min-h-11"
+            >
+              Reset demo
+            </button>
           </div>
         ) : null}
-      </section>
+      </header>
 
-      <div className="min-w-0">
-        <RankedLots state={lotsState} compact />
+      <div className="grid gap-10 lg:grid-cols-[11fr_9fr] lg:gap-8">
+        <section aria-labelledby="questions-heading" className="flex min-w-0 flex-col gap-3">
+          <h2 id="questions-heading" className="text-xl text-fg sm:text-2xl">
+            Open questions{" "}
+            <span className="font-mono text-base tabular-nums text-faint">
+              ({questions === null ? "…" : openTotal})
+            </span>
+          </h2>
+
+          {error ? <ErrorBanner message={error} onRetry={load} /> : null}
+          {questions === null && !error ? <p className="text-sm text-muted">Loading questions…</p> : null}
+          {questions !== null && groups.length === 0 ? (
+            <p className="rounded-lg border border-line bg-surface px-4 py-6 text-sm text-muted">
+              No open questions. Run a lot on the{" "}
+              <Link href="/#demo" className="text-accent underline underline-offset-2">
+                buyer page
+              </Link>{" "}
+              to draft some.
+            </p>
+          ) : null}
+
+          <ul className="flex flex-col gap-4">
+            {groups.map((group) => (
+              <QuestionGroup key={group.propertyId} group={group} onAnswered={load} />
+            ))}
+          </ul>
+        </section>
+
+        <div className="min-w-0 lg:sticky lg:top-6 lg:max-h-[calc(100dvh-3rem)] lg:self-start lg:overflow-y-auto lg:pr-1">
+          <BuyerView state={lotsState} />
+        </div>
       </div>
     </div>
   );
