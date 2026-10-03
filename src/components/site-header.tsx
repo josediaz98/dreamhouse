@@ -8,7 +8,7 @@ export function SiteHeader() {
         <Link href="/" aria-label="Lotline home">
           <Image src="/brand/wordmark.svg" alt="Lotline" width={170} height={34} priority unoptimized />
         </Link>
-        <nav aria-label="Primary" className="flex items-center gap-5 text-sm text-muted">
+        <nav aria-label="Primary" className="flex items-center gap-4 whitespace-nowrap text-sm text-muted sm:gap-5">
           <Link href="/#demo" className="hover:text-fg">
             Live demo
           </Link>

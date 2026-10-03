@@ -160,7 +160,8 @@ export function Playground({ lots, loading }: PlaygroundProps) {
       });
 
       // The unknowns become seller questions: the signature beat of the demo.
-      let drafted = final.checks.filter((c) => c.verdict === "unknown" && c.questionId !== null).length;
+      let drafted = 0;
+      let reused = final.checks.filter((c) => c.verdict === "unknown" && c.questionId !== null).length;
       // A lot already ruled out by a hard rule does not need seller questions.
       const worthAsking = final.overall !== "fail";
       // Never ask twice for the same lot and field: reuse a question that is still open.
@@ -175,7 +176,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
           (q) => q.propertyId === lot.id && q.fieldKey === FIELD_FOR_RULE[item.rule],
         );
         if (existing) {
-          drafted += 1;
+          reused += 1;
           final = {
             ...final,
             checks: final.checks.map((c) =>
@@ -226,7 +227,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
           ? "Ruled out by a hard rule: no site visit, no seller questions."
           : final.unknownCount === 0
             ? "No unknowns: every rule has a sourced answer."
-            : `${plural(final.unknownCount, "unknown")} → ${plural(drafted, "seller question")} drafted`,
+            : `${plural(final.unknownCount, "unknown")} → ${plural(drafted + reused, "seller question")} ${drafted === 0 ? "open" : "drafted"}`,
       );
       setTimings((prev) => [...prev, ...spent]);
       setPhase("done");
