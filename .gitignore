@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+secrets/
+*credentials*
+node_modules/
+.next/
+.vercel/
+.DS_Store
