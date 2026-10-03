@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.131.0",
+    "@modelcontextprotocol/sdk": "^1.32.0",
     "@modelcontextprotocol/server": "2",
     "@supabase/supabase-js": "^2.117.2",
     "mcp-handler": "2.1.1",

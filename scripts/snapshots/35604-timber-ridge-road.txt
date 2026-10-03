@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/35604-timber-ridge-road
+address: 35604 Timber Ridge Road, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed at $120,000. 0.46 acre ridge lot with ocean views and an older 3 bedroom perc test, needs to be updated.
+MLS #325098967.

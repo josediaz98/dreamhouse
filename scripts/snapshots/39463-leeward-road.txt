@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/39463-leeward-road
+address: 39463 Leeward Road, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed at $224,500. 0.39-acre meadow lot presents an opportunity to build with blue water views, with a topographic map and septic design by Dimensions IV available.
+MLS #325036245.

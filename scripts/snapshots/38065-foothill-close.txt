@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/38065-foothill-close
+address: 38065 Foothill Close, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed for $120,000; the summary headline says 1 acre. Description: a beautiful, 1/2 acre East-Meadow lot featuring level to gently-sloping land, mature trees, ample sunshine and great potential to open up ocean views, with a 24 ft. height limit and is not a Bane Bill lot.
+MLS #325101378.

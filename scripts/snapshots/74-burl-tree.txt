@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/74-burl-tree
+address: 74 Burl Tree, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed at $310,000. Approximately 0.50 acre residential lot ideally positioned, offering a gently sloping, mostly level build site with potential blue water ocean views and expansive meadow outlooks. Public water and public sewer are available at the street.
+MLS #326014748.

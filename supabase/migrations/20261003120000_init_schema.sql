@@ -7,7 +7,7 @@ create table public.properties (
   id           uuid primary key default gen_random_uuid(),
   apn          text,
   address      text not null,
-  source_url   text not null,
+  source_url   text not null unique,
   price_usd    numeric,
   acres        numeric,
   snapshot_at  timestamptz not null,
@@ -85,7 +85,7 @@ alter publication supabase_realtime add table public.questions;
 
 -- Seller answer: update the question and the matching spec_field in one transaction,
 -- so a single Realtime commit refreshes the verdict.
-create or replace function public.answer_question(p_question_id uuid, p_answer text, p_value jsonb)
+create or replace function public.answer_question(p_question_id uuid, p_answer text, p_value jsonb, p_known boolean)
 returns public.questions
 language plpgsql
 security invoker
@@ -102,12 +102,13 @@ begin
   end if;
 
   insert into public.spec_fields (property_id, key, value, status, source_type, source_label, confidence, note, extracted_at)
-  values (q.property_id, q.field_key, p_value, 'known', 'seller', 'Seller answer', null, p_answer, now())
+  values (q.property_id, q.field_key, case when p_known then p_value else null end,
+          case when p_known then 'known' else 'unknown' end, 'seller', 'Seller answer', null, p_answer, now())
   on conflict (property_id, key) do update
-    set value = excluded.value, status = 'known', source_type = 'seller', source_url = null,
+    set value = excluded.value, status = excluded.status, source_type = 'seller', source_url = null,
         source_page = null, source_label = excluded.source_label, confidence = null,
         note = excluded.note, extracted_at = now();
   return q;
 end;
 $$;
-revoke all on function public.answer_question(uuid, text, jsonb) from public, anon, authenticated;
+revoke all on function public.answer_question(uuid, text, jsonb, boolean) from public, anon, authenticated;

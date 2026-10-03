@@ -92,6 +92,19 @@ export async function parcelByPoint(lon: number, lat: number): Promise<Parcel | 
   return rows[0] ? toParcel(rows[0]) : null;
 }
 
+export async function parcelsNear(lon: number, lat: number, meters: number): Promise<Parcel[]> {
+  const rows = await arcgis(PARCELS_URL, {
+    geometry: `${lon},${lat}`,
+    geometryType: "esriGeometryPoint",
+    inSR: "4326",
+    spatialRel: "esriSpatialRelIntersects",
+    distance: String(meters),
+    units: "esriSRUnit_Meter",
+    outFields: PARCEL_FIELDS,
+  });
+  return rows.map(toParcel).filter((p): p is Parcel => p !== null);
+}
+
 export async function floodZoneAt(lon: number, lat: number): Promise<FloodZone | null> {
   const rows = await arcgis(FEMA_URL, {
     geometry: `${lon},${lat}`,
@@ -151,4 +164,32 @@ export async function gisSpecFields(propertyId: string, parcel: Parcel): Promise
   // Verified 2026-10-03: the DRAFT layer returns no polygon at a Sea Ranch parcel although its extent covers it, so a miss is not a negative.
   else out.push(f(propertyId, "coastal_zone", null, COASTAL_SOURCE, "DRAFT layer returned no polygon at the centroid; not treated as outside the zone"));
   return out;
+}
+
+export interface ParcelResolution {
+  readonly parcel: Parcel | null;
+  /** How the APN was matched, or why it was not. Stored as the apn note. */
+  readonly note: string;
+  readonly candidates: readonly Parcel[];
+}
+
+/**
+ * Address -> APN. Census geocoding interpolates along the street, so the point alone lands on road
+ * parcels. We accept a parcel only if it is vacant and exactly one vacant parcel within 80 m matches a
+ * listed acreage within 3%. Anything else resolves to null (APN unknown), never a guess.
+ */
+export async function resolveParcel(lon: number, lat: number, acresHints: readonly number[]): Promise<ParcelResolution> {
+  const near = await parcelsNear(lon, lat, 80);
+  const vacant = near.filter((p) => /vacant/i.test(p.asmtUseCode ?? "") && p.acres !== null && p.acres > 0);
+  const matches = vacant.filter((p) => acresHints.some((a) => Math.abs((p.acres ?? 0) - a) / a <= 0.03));
+  if (matches.length === 1) {
+    return { parcel: matches[0] ?? null, candidates: matches, note: `Matched by geocode (80 m) + vacant use code + acreage within 3% of listing (${acresHints.join(" / ")} ac)` };
+  }
+  return {
+    parcel: null,
+    candidates: matches,
+    note: matches.length === 0
+      ? `No vacant parcel within 80 m matches the listed acreage (${acresHints.join(" / ")} ac)`
+      : `${matches.length} vacant parcels within 80 m match the listed acreage; APN not guessed`,
+  };
 }

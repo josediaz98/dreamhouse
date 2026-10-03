@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/35995-highway-1
+address: 35995 Highway 1, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed at $395,000. 2.23 acre parcel with 160-degree ocean views and approved conceptual plans for a 4BR, 3BA home by Sea Ranch co-founder Donlyn Lyndon, FAIA and Doug Thompson. The property has a 4 Bedroom perc test/septic design and requires septic.
+MLS #325038078.

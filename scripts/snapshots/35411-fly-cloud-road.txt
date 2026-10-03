@@ -1,0 +1,7 @@
+url: https://activate.roveridx.com/ca/the-sea-ranch/35411-fly-cloud-road
+address: 35411 Fly Cloud Road, The Sea Ranch, CA 95497
+captured_at: 2026-10-03T18:00:00Z
+kind: search-result summary captured 2026-10-03 (NOT verbatim listing text; Zillow/Homes.com/Redfin block scraping, so no live fetch was made)
+---
+Listed for $105,000; the summary headline says 1 acre. Description: a beautiful Sea Ranch hillside parcel encompassing over one-half acre of gently sloping terrain with a stunning blend of open building areas and established coastal forest, and blue water ocean views can be enjoyed from the lot.
+MLS #326013694.
