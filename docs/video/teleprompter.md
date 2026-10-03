@@ -11,7 +11,7 @@ Record each clip separately. Export each one as `~/Movies/lotline/<LETTER>.mp4`.
 **Do:** start recording → paste the prompt below → Enter → wait for the answer → hold 5 s → stop.
 
 ```
-Use the lotline tools. Find me a Sea Ranch lot under $400,000 where I can build a 2-story house with a 2,155 sq ft footprint, a 400 sq ft deck, 26 ft tall. Search once, check the two best lots that are not ruled out, and answer in under 120 words: which lots are ruled out, which rule and why, and what is still unknown. Report only what the tools returned; do not compute anything yourself.
+Use the lotline tools. Find me a Sea Ranch lot under $400,000 where I can build a 2-story house with a 2,155 sq ft footprint, a 400 sq ft deck, 26 ft tall. Search once, then check the ruled-out lots and the two best open lots. Answer in under 120 words: which lots are ruled out and the exact rule, and what is still unknown on the open lots. Report only what the tools returned; do not compute anything yourself.
 ```
 
 **Say (right after pressing Enter):**
