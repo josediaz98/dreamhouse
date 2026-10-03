@@ -2,6 +2,33 @@
 
 Owner: Brand lane. Tokens live in `src/styles/tokens.css`, fonts in `src/styles/fonts.ts`. This file is the reference; the CSS is the source of truth.
 
+## Product name — decision needed from Jose
+
+DREAMHOUSE is the team name. The product can differ. Assets below are set in the working name `dreamhouse`; the wordmark regenerates in one command once you pick (see Assets). Trademark and domain availability are **not checked** for any option.
+
+| Option | Why |
+|---|---|
+| **Lotline** (recommended) | The boundary where facts stop and unknowns begin. Matches the mark's dashed edge. Literal, hard to misread, easy to say to an agent |
+| **Plumb** | Builder's plumb line: "checked true". Short and ownable; less obvious what it does |
+| **Footing** | What the house stands on; the data layer under design, financing and builders. Softer link to the dashed-edge idea |
+
+## Voice
+
+Direct, factual, no hype. We say what a field is, where it came from, and when we do not know. **Sourced** and **unknown** are first-class words: every claim carries a source, and "unknown" is a real answer that becomes a question to the seller, never a hedge or an error. No superlatives, no "revolutionary", no invented numbers; a fixture is labelled "demo data" and generated footage "illustrative". Short sentences, concrete nouns (setback, septic, tract map), plain verbs. Headline pattern: a question a buyer actually asks, answered by the product.
+
+## Assets
+
+| File | Use |
+|---|---|
+| `public/brand/mark.svg`, `mark-mono.svg` | Mark: a shed-roof house (Sea Ranch silhouette) whose right wall is dashed in the accent: the unknown edge. `mark-mono` takes `currentColor` |
+| `public/brand/wordmark.svg` | Mark + `dreamhouse` in Fraunces 500, text converted to outlines (no font needed) |
+| `public/brand/icon.svg`, `src/app/icon.svg`, `src/app/apple-icon.png` | Favicon and touch icon (mark on a dark tile) |
+| `src/app/opengraph-image.png`, `public/brand/og.png` | OG image, 1200×630 (Next picks up the file convention) |
+| `docs/video/cards/*.html` + `.png` | OG source, title card and end card (1920×1080) |
+| `src/styles/assets/make-wordmark.py` | Regenerates the SVGs for a new name: `python make-wordmark.py <fraunces.woff2> public/brand <name>` (needs `fonttools`, `brotli`). Then re-render the cards from `docs/video/cards/` |
+
+Mark colours are literal hex (`#ecebe4`, `#d8a24a`) because SVG files cannot read CSS tokens; they match `fg` and `accent`.
+
 ## Palette
 
 Dark only. Neutral ramp is a weathered-cedar fog (slightly green-warm). One accent. Three verdict colours.

@@ -1,0 +1,36 @@
+/* Shared by og.html, title.html, end.html. Values mirror src/styles/tokens.css (plain CSS, no Tailwind). */
+@font-face { font-family: "Fraunces"; src: url(fonts/fraunces.woff2) format("woff2"); font-weight: 500; }
+@font-face { font-family: "Instrument Sans"; src: url(fonts/instrument-sans.woff2) format("woff2"); font-weight: 400 500; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-400.woff2) format("woff2"); font-weight: 400; }
+@font-face { font-family: "IBM Plex Mono"; src: url(fonts/plex-mono-500.woff2) format("woff2"); font-weight: 500; }
+
+:root {
+  --bg: #0d0f0e; --surface: #131614; --raised: #1a1e1b; --line: #2a302c;
+  --fg: #ecebe4; --muted: #a3aaa2; --faint: #858d85;
+  --accent: #d8a24a;
+  --pass: #7fbf8e; --pass-soft: #222e25; --pass-line: #3c5a45;
+  --fail: #e8695c; --fail-soft: #31221e; --fail-line: #6a3a33;
+  --unknown: #93a8e0; --unknown-soft: #252a31; --unknown-line: #3f4a66;
+}
+* { box-sizing: border-box; margin: 0; }
+html, body { background: var(--bg); color: var(--fg); font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+.card { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between;
+  background:
+    linear-gradient(var(--line) 1px, transparent 1px) 0 0 / 100% 120px,
+    linear-gradient(90deg, var(--line) 1px, transparent 1px) 0 0 / 120px 100%,
+    var(--bg);
+  background-blend-mode: normal; }
+.card::before { content: ""; position: absolute; inset: 0; background: radial-gradient(120% 90% at 0% 100%, transparent 0 40%, var(--bg) 100%); opacity: .9; pointer-events: none; }
+.card > * { position: relative; }
+.label { font-family: "IBM Plex Mono", monospace; text-transform: uppercase; letter-spacing: .08em; color: var(--faint); }
+.display { font-family: "Fraunces", serif; font-weight: 500; letter-spacing: -0.02em; line-height: 1.02; text-wrap: balance; }
+.mono { font-family: "IBM Plex Mono", monospace; }
+.muted { color: var(--muted); }
+.accent { color: var(--accent); }
+.chips { display: flex; gap: 16px; }
+.chip { font-family: "IBM Plex Mono", monospace; font-weight: 500; display: inline-flex; align-items: center; gap: 12px; border-radius: 6px; border: 1px solid; }
+.chip.pass { color: var(--pass); background: var(--pass-soft); border-color: var(--pass-line); }
+.chip.fail { color: var(--fail); background: var(--fail-soft); border-color: var(--fail-line); }
+.chip.unknown { color: var(--unknown); background: var(--unknown-soft); border: 1px dashed var(--unknown-line); }
+.dot { width: .55em; height: .55em; border-radius: 50%; background: currentColor; }
+.chip.unknown .dot { background: none; border: 2px solid currentColor; }
