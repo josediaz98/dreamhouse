@@ -45,7 +45,7 @@ At a 26 ft, 2-story house, the stored facts rule out 2 of 6 lots on the Design M
 - **Seller answers in the demo are typed by the presenter.** They are not stored as verified data.
 - **Design Manual is the 2013 edition.** The CC&Rs are behind a login and are not used.
 - **County GIS is for planning purposes only,** not parcel-specific decisions. Two lots have no resolved APN and are drawn dashed on the parcel sheet.
-- **Payments.** Metering is sandbox-only and off when no key is configured: each successful `get_spec` or `check_buildability` call sends one Stripe Billing meter event (`lotline_tool_call`, $0.50 per call on the sandbox subscription) when `STRIPE_SECRET_KEY` and `STRIPE_METER_CUSTOMER_ID` are set. Without them nothing is sent and calls are free. MPP settlement was dropped (an MPP profile needs account activation); the HTTP 402 challenge code stays but is off without `STRIPE_PROFILE_ID`. Metering has not been verified against the real sandbox yet.
+- **Payments.** Metering is sandbox-only and off when no key is configured: each successful `get_spec` or `check_buildability` call sends one Stripe Billing meter event (`lotline_tool_call`, $0.50 per call on the sandbox subscription) when `STRIPE_SECRET_KEY` and `STRIPE_METER_CUSTOMER_ID` are set. Without them nothing is sent and calls are free. MPP settlement was dropped (an MPP profile needs account activation); the HTTP 402 challenge code stays but is off without `STRIPE_PROFILE_ID`. Verified once from a local run (2026-10-03): one `get_spec` call produced "1 × Lotline tool call, $0.50" on the sandbox invoice preview. The deployed site has no Stripe key, so it does not meter.
 - **Sea Ranch only.** Other jurisdictions need their own rules.
 - Not legal, engineering or financial advice.
 
