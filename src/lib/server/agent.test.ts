@@ -37,4 +37,27 @@ describe("buyer agent", () => {
     expect(events.at(-1)).toEqual({ type: "final", text: "Lot a fails: height." });
     expect((await repo.listCalls(10)).map((c) => c.tool)).toEqual(["check_buildability", "search_properties"]);
   });
+
+  it("refuses ask_seller when a question is already open and after 3 asks", async () => {
+    const q = { id: "q-open", propertyId: "a", fieldKey: "flood_zone", text: "?", status: "open", answer: null, answeredAt: null } as const;
+    const repo = memoryRepo({ properties: [P], rules: [...SEA_RANCH_RULES], fields: [f("acres", 0.5)], questions: [q] });
+    const ask = (id: string, fieldKey: string): Anthropic.ToolUseBlock =>
+      ({ type: "tool_use", id, name: "ask_seller", input: { propertyId: "a", fieldKey, text: "Please confirm this field" } }) as Anthropic.ToolUseBlock;
+    const seen: Anthropic.MessageParam[][] = [];
+    const turns: Anthropic.ContentBlock[][] = [
+      [ask("u1", "flood_zone"), ask("u2", "septic_status"), ask("u3", "water_status"), ask("u4", "zoning"), ask("u5", "land_use")],
+      [{ type: "text", text: "done" } as Anthropic.TextBlock],
+    ];
+    let i = 0;
+    const client = { messages: { create: async (args: { messages: Anthropic.MessageParam[] }) => (seen.push(structuredClone(args.messages)), { content: turns[i++] ?? [] }) } } as unknown as Anthropic;
+    for await (const _ of runBuyerAgent(repo, { prompt: "Beach lot" }, client)) void _;
+
+    const results = (seen[1]?.at(-1)?.content ?? []) as Anthropic.ToolResultBlockParam[];
+    expect(results.map((r) => r.is_error === true)).toEqual([true, false, false, false, true]);
+    expect(String(results[0]?.content)).toMatch(/already open/);
+    expect(String(results[4]?.content)).toMatch(/limit \(3\)/);
+    const open = await repo.listQuestions({ status: "open" });
+    expect(open.map((x) => x.fieldKey).sort()).toEqual(["flood_zone", "septic_status", "water_status", "zoning"]);
+  });
 });
+

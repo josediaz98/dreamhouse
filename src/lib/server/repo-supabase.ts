@@ -135,7 +135,12 @@ export function supabaseRepo(db: SupabaseClient = serviceClient()): Repo {
       const open = await db.from(TABLES.questions).select("*").eq("property_id", propertyId).eq("field_key", fieldKey).eq("status", "open").maybeSingle();
       if (open.error) throw new Error(`question: ${open.error.message}`);
       if (open.data) return question(open.data);
-      return question(ok(await db.from(TABLES.questions).insert({ property_id: propertyId, field_key: fieldKey, text }).select("*").single(), "question"));
+      const ins = await db.from(TABLES.questions).insert({ property_id: propertyId, field_key: fieldKey, text }).select("*").single();
+      if (ins.error?.code === "23505") {
+        // lost a race against another open question for the same field: return the winner
+        return question(ok(await db.from(TABLES.questions).select("*").eq("property_id", propertyId).eq("field_key", fieldKey).eq("status", "open").single(), "question"));
+      }
+      return question(ok(ins, "question"));
     },
     async answerQuestion(id, answer, parsed) {
       const res = await db.rpc("answer_question", { p_question_id: id, p_answer: answer, p_value: parsed.value, p_known: parsed.known });

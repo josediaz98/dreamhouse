@@ -12,14 +12,20 @@ import path from "node:path";
 import { geocodeAddress } from "../src/lib/server/geocode";
 import { gisSpecFields, hwy1SideField, resolveParcel, type Parcel } from "../src/lib/server/gis";
 import { buildSpecFields, claudeExtractor, EXTRACTION_MODEL, FactsSchema, parseSnapshot, validateFacts, type ExtractedFact } from "../src/lib/server/ingest";
+import { checkBuildability } from "../src/lib/server/buildability";
+import { DEMO_PROGRAM } from "../src/lib/server/demo";
 import { memoryRepo } from "../src/lib/server/repo-memory";
 import { supabaseRepo } from "../src/lib/server/repo-supabase";
 import { SEA_RANCH_RULES } from "../src/lib/server/rules";
 import { runTool } from "../src/lib/server/tools";
 
 const DIR = path.join(import.meta.dirname, "snapshots");
-const FLOOD_QUESTION =
-  "FEMA maps this area as zone D (flood hazard undetermined). Is the lot inside a special flood hazard area, and is there a flood determination or elevation certificate?";
+const SELLER_QUESTIONS_FOR = ["septic_status", "water_status", "flood_zone"] as const;
+const QUESTION_TEXT: Record<(typeof SELLER_QUESTIONS_FOR)[number], string> = {
+  septic_status: "Has a septic system been approved or permitted for this lot (or is public sewer connected), and for how many bedrooms?",
+  water_status: "Is the lot connected to a public water supply (Sea Ranch Water Company), or does it need a well?",
+  flood_zone: "FEMA maps this area as zone D (flood hazard undetermined). Is the lot inside a special flood hazard area, and is there a flood determination or elevation certificate?",
+};
 
 async function cachedFacts(name: string): Promise<readonly ExtractedFact[] | null> {
   try {
@@ -82,17 +88,20 @@ async function main(): Promise<void> {
     const acres = fields.find((f) => f.key === "acres");
     await repo.upsertProperty({ ...placeholder, acres: acres?.status === "known" && typeof acres.value === "number" ? acres.value : null });
 
-    // FEMA zone D (undetermined) is stored as unknown; give the seller a question for it on every such lot.
-    if (fields.find((f) => f.key === "flood_zone")?.status !== "known") {
-      await repo.createQuestion({ propertyId: placeholder.id, fieldKey: "flood_zone", text: FLOOD_QUESTION });
+    // One open question per rule-relevant unknown, except on lots that already fail (no point asking).
+    const verdict = checkBuildability(placeholder.id, fields, SEA_RANCH_RULES, DEMO_PROGRAM);
+    if (verdict.overall !== "fail") {
+      for (const key of SELLER_QUESTIONS_FOR) {
+        if (fields.find((f) => f.key === key)?.status !== "known") await repo.createQuestion({ propertyId: placeholder.id, fieldKey: key, text: QUESTION_TEXT[key] });
+      }
     }
     const unknown = fields.filter((f) => f.status !== "known").length;
     console.log(`${snap.address}: apn=${parcel?.apn ?? "unknown"} known=${fields.length - unknown}/${fields.length} (${res.note})`);
   }
   if (dry) {
-    const out = await runTool(repo, "search_properties", { program: { footprintSqFt: 2155, deckSqFt: 400, heightFt: 20, stories: 2 } });
+    const out = await runTool(repo, "search_properties", { program: DEMO_PROGRAM });
     for (const i of out.items) {
-      const r = await runTool(repo, "check_buildability", { propertyId: i.property.id, program: { footprintSqFt: 2155, deckSqFt: 400, heightFt: 20, stories: 2 } });
+      const r = await runTool(repo, "check_buildability", { propertyId: i.property.id, program: DEMO_PROGRAM });
       console.log(i.property.address.padEnd(48), r.overall.padEnd(8), r.checks.map((c) => `${c.rule}:${c.verdict}`).join(" "));
     }
     console.log(`eliminatedCount=${out.eliminatedCount}`);

@@ -1,52 +1,56 @@
 # Back lane: demo state on stored data
 
-Project ref `qpqorehruvwwpzhaqvef`. Demo program: footprint 2,155 sq ft, deck 400 sq ft, height 20 ft, 2 stories.
-Stored state after `ingest.ts`: 6 lots, none eliminated, every lot overall `unknown`, one open `flood_zone` question per lot.
+Project ref `qpqorehruvwwpzhaqvef`. Demo program (`src/lib/server/demo.ts`): footprint 2,155 sq ft, deck 400 sq ft, **height 26 ft**, 2 stories.
+26 ft is above the 24 ft west-of-Hwy-1 limit and below the 35 ft east limit, so the split comes from stored facts only.
+
+Stored state after `ingest.ts` (verified 2026-10-03): 6 lots, `eliminatedCount` = 2, 4 lots `unknown`, 12 open seller questions
+(septic, water and flood on each of the 4 east lots; none on the 2 failing lots).
 
 ## Lot ids
 
 | Lot | id | Hwy 1 side | Role |
 |---|---|---|---|
-| 39463 Leeward Road | `3b12d583-4e71-4864-b949-fd384cd9897b` | west | A: fails on height after the answer |
-| 74 Burl Tree | `5955e813-1918-401e-867e-4d46c8ad5e61` | west | B: unknown -> 2 answers -> pass |
-| 35604 Timber Ridge Road | `9d1adcd4-e664-4d4b-aa2d-d8328072c61f` | east | C: stays unknown, open questions |
+| 39463 Leeward Road | `3b12d583-4e71-4864-b949-fd384cd9897b` | west | A: fails on stored height (limit 24 ft) |
+| 35604 Timber Ridge Road | `9d1adcd4-e664-4d4b-aa2d-d8328072c61f` | east | B: unknown -> 3 seller answers -> pass |
+| 35995 Highway 1 | `a5ddf92f-dcb2-4e8e-a48f-eeb1d04ce646` | east | C: stays unknown, 3 questions open |
 
-Other lots: Fly Cloud `cb24261a-6334-4000-81ee-f99fb9df163c`, Highway 1 `a5ddf92f-dcb2-4e8e-a48f-eeb1d04ce646`, Foothill Close `ffe90278-3d7d-4306-a261-274165e3faf3`.
+Other lots: 74 Burl Tree `5955e813-1918-401e-867e-4d46c8ad5e61` (west, fails like Leeward), Fly Cloud `cb24261a-6334-4000-81ee-f99fb9df163c`
+(east, unknown), Foothill Close `ffe90278-3d7d-4306-a261-274165e3faf3` (east, unknown; acreage conflict).
 
-## Why no lot fails in the stored state
-
-At 20 ft every lot is within the height limit that the facts allow, or the limit is still undetermined. A stored fail would need an invented fact. So the fail comes from a seller answer (A). If a stored fail is needed, use a 25 ft program: Leeward is west of Hwy 1, the limit is at most 24 ft, and the verdict is `fail` (verified: "Limit 24 ft (Sea Ranch Design Manual); your house is 25 ft").
-
-## Steps (REST; `$U` is the base URL, header `x-agent-id: demo-e2e` marks demo calls)
+## Steps (REST; `$U` is the base URL; header `x-agent-id: demo-e2e` marks demo calls)
 
 ```bash
 H='content-type: application/json'
-P='{"footprintSqFt":2155,"deckSqFt":400,"heightFt":20,"stories":2}'
+P='{"footprintSqFt":2155,"deckSqFt":400,"heightFt":26,"stories":2}'
 
-# A. Leeward: unknown -> fail
-curl -s -X POST $U/api/tools/ask_seller -H "$H" -d '{"propertyId":"3b12d583-4e71-4864-b949-fd384cd9897b","fieldKey":"tract_map_height_cap_ft","text":"Does the recorded tract map cap the height at 16 ft for this lot?"}'
-curl -s -X POST $U/api/questions/<question.id>/answer -H "$H" -d '{"answer":"The tract map says 16 ft"}'
-# check_buildability now returns overall "fail" (height)
+# Scene 1: 2 of 6 eliminated on stored facts
+curl -s -X POST $U/api/tools/search_properties -H "$H" -d "{\"program\":$P}"        # eliminatedCount 2 (Leeward, Burl Tree)
 
-# B. Burl Tree: unknown -> pass (two answers)
-curl -s -X POST $U/api/tools/ask_seller -H "$H" -d '{"propertyId":"5955e813-1918-401e-867e-4d46c8ad5e61","fieldKey":"tract_map_height_cap_ft","text":"Does the recorded tract map cap the height at 16 ft for this lot?"}'
-curl -s -X POST $U/api/questions/<that id>/answer -H "$H" -d '{"answer":"No cap on the tract map"}'      # height -> pass, flood still unknown
-curl -s "$U/api/questions?status=open"                                                                       # find the Burl Tree flood_zone question
-curl -s -X POST $U/api/questions/<flood id>/answer -H "$H" -d '{"answer":"Outside the special flood hazard area"}'   # overall -> pass
+# B. Timber Ridge: one flip per answer
+curl -s "$U/api/questions?status=open"                                                # ids of the three Timber Ridge questions
+curl -s -X POST $U/api/questions/<septic id>/answer -H "$H" -d '{"answer":"Septic approved for 3 bedrooms"}'                  # septic -> pass
+curl -s -X POST $U/api/questions/<water id>/answer  -H "$H" -d '{"answer":"Connected to the Sea Ranch Water Company"}'       # water  -> pass
+curl -s -X POST $U/api/questions/<flood id>/answer  -H "$H" -d '{"answer":"Outside the special flood hazard area"}'           # flood  -> pass, overall pass
 
-# C. Timber Ridge: do nothing. Overall stays unknown (septic, water, flood), 1 open question (flood).
+# C. Highway 1 lot: do nothing. Overall stays unknown (septic, water, flood), 3 open questions.
 ```
 
-`scripts/e2e-demo.ts` runs A, B and C and prints the verdicts (verified 2026-10-03: A unknown->fail, B unknown->unknown->pass, C unknown).
+`scripts/e2e-demo.ts` runs scene 1, A, B and C and prints the verdicts (verified: A `fail`; B `unknown` -> septic pass -> water pass -> flood pass = overall `pass`; C `unknown`, 3 open).
 It mutates the database. Reset afterwards:
 
 ```bash
 pnpm exec tsx --env-file=.env.local scripts/reset-demo.ts          # dry run: prints counts
-pnpm exec tsx --env-file=.env.local scripts/reset-demo.ts --apply  # deletes questions of the demo lots + calls by buyer-agent, mcp-client, demo-e2e
-pnpm exec tsx --env-file=.env.local scripts/ingest.ts              # restores spec_fields and the flood questions
+pnpm exec tsx --env-file=.env.local scripts/reset-demo.ts --apply  # questions of the demo lots + calls by buyer-agent, mcp-client, demo-e2e
+pnpm exec tsx --env-file=.env.local scripts/ingest.ts              # restores spec_fields and seeds the open questions
 ```
 
 Realtime: each answer fires `spec_fields UPDATE` and `questions UPDATE` (verified with the anon key).
+
+## Buyer agent (`POST /api/agent`)
+
+Run on stored data at 26 ft: 3 tool calls (search_properties, 2x check_buildability), 0 ask_seller, all questions already open. Guards in the loop:
+no `ask_seller` for a field with an open question, at most 3 per run, at most 12 tool calls.
+`ask_seller` is idempotent in the repo and backed by a unique index (one open question per property and field).
 
 ## What is not claimed
 
