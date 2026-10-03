@@ -166,6 +166,13 @@ export function claudeExtractor(client: Anthropic = new Anthropic()): Extractor 
 // ---------------------------------------------------------------------------
 
 const MANUAL_URL = "https://www.tsra.org/wp-content/uploads/2020/06/DM_v7.pdf";
+const SNAPSHOT_BASE_URL = "https://github.com/josediaz98/dreamhouse/blob/main/scripts/snapshots/";
+
+/** "35411 Fly Cloud Road, The Sea Ranch, CA" -> repo URL of scripts/snapshots/35411-fly-cloud-road.txt */
+export function snapshotUrl(address: string): string {
+  const slug = (address.split(",")[0] ?? address).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+  return `${SNAPSHOT_BASE_URL}${slug}.txt`;
+}
 const manual = (page: number, label: string): SourceRef => ({ type: "manual", url: MANUAL_URL, page, label: `Sea Ranch Design Manual (Oct 2013) ${label}` });
 
 export interface Resolution {
@@ -188,7 +195,8 @@ export function buildSpecFields(
   const date = snapshot.capturedAt.slice(0, 10);
   // Never call a search-result summary a listing page: the label says what the text really is.
   const label = /^search-result summary/i.test(snapshot.kind) ? `Search-result summary of listing, ${date} (not the listing page)` : `Listing page snapshot ${date}`;
-  const listing: SourceRef = { type: "listing", url: snapshot.url, page: null, label };
+  // Link to the exact text we ingested (public in the repo), not to the broker page, which can 404.
+  const listing: SourceRef = { type: "listing", url: snapshotUrl(snapshot.address), page: null, label };
   const out = new Map<SpecFieldKey, SpecField>();
   for (const key of SPEC_FIELD_KEYS) out.set(key, field(propertyId, key, null, "unknown", null, null, "Not stated in the listing or in GIS"));
 

@@ -61,3 +61,13 @@ describe("ingest", () => {
     }
   });
 });
+
+describe("snapshotUrl", () => {
+  it("points listing sources at the ingested snapshot file in the repo", async () => {
+    const { snapshotUrl } = await import("@/lib/server/ingest");
+    expect(snapshotUrl("35411 Fly Cloud Road, The Sea Ranch, CA 95497")).toBe(
+      "https://github.com/josediaz98/dreamhouse/blob/main/scripts/snapshots/35411-fly-cloud-road.txt",
+    );
+    expect(snapshotUrl("74 Burl Tree, The Sea Ranch, CA 95497")).toMatch(/\/74-burl-tree\.txt$/);
+  });
+});
