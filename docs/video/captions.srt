@@ -1,0 +1,72 @@
+1
+00:00:00,300 --> 00:00:05,800
+At The Sea Ranch, {N} of {M} listed lots can't hold
+a {X} square foot, {Y} foot house.
+
+2
+00:00:06,200 --> 00:00:09,000
+No listing says so.
+
+3
+00:00:09,200 --> 00:00:14,800
+The rules sit in a fifty-two page manual and county maps.
+Buyers drive out to find the answer.
+
+4
+00:00:15,300 --> 00:00:24,700
+{PRODUCT} makes a lot's facts readable by an agent.
+Every field is sourced. Every unknown is explicit.
+
+5
+00:00:25,300 --> 00:00:34,700
+Four tools over MCP, or a pay-per-call API.
+One question: can I build here?
+
+6
+00:00:35,300 --> 00:00:49,700
+The buyer tells their agent what they want to build.
+
+7
+00:00:50,300 --> 00:01:04,700
+The agent searches {n} lots. Each comes back with
+what is known and what is not.
+
+8
+00:01:05,300 --> 00:01:19,700
+Verdicts are computed from the rules table, not by the model.
+These lots fail on height, coverage, setbacks.
+The agent never drives out to them.
+
+9
+00:01:20,300 --> 00:01:29,700
+A generic model guesses and sounds sure.
+Here the answer is conditional, and every line has a source.
+
+10
+00:01:30,300 --> 00:01:44,700
+One lot passes everything we can check.
+One rule is unknown: {FIELD}.
+Unknown is an answer, not an error.
+
+11
+00:01:45,300 --> 00:01:54,700
+The unknown becomes a question for the seller,
+drafted and sent by the agent.
+
+12
+00:01:55,300 --> 00:02:09,700
+The seller answers once. The spec updates over
+Supabase Realtime and the agent re-ranks the lots, live.
+
+13
+00:02:10,300 --> 00:02:19,000
+Every call is paid per use with Stripe's machine payments,
+in sandbox.
+
+14
+00:02:19,200 --> 00:02:24,700
+Built on Supabase, Vercel, Stripe and Claude.
+
+15
+00:02:25,200 --> 00:02:29,800
+Lot facts first. Then design, financing and builders.
