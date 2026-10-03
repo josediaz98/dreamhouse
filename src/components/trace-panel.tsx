@@ -12,7 +12,7 @@ const STATUS_TEXT: Record<TraceStatus, string> = {
   running: "running",
   ok: "ok",
   unknown: "unknown",
-  fail: "failed",
+  fail: "ruled out",
 };
 
 export interface TraceQuestion {

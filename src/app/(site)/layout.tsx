@@ -38,7 +38,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
             </p>
             <p>
               County GIS data is for planning purposes only, not parcel-specific decisions. Seller answers in the demo are
-              typed by the presenter.
+              entered by the presenter.
             </p>
             <p>{AERIAL_CREDIT}. Parcel outlines: Sonoma County CDR_Parcels.</p>
           </div>

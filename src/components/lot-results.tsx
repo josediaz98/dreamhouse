@@ -354,7 +354,7 @@ export function LotResults({
       {ready && view === "map" && map ? (
         <div className="rounded-lg border border-line bg-bg/40 p-3 sm:p-4">
           <p className="mb-3 font-mono text-xs text-muted">
-            Parcels at one scale · colour is the live verdict · dashed edge means unknown · select a parcel to open its checks
+            Parcels at one scale · color is the live verdict · dashed edge means unknown · select a parcel to open its checks
           </p>
           <ParcelSheet
             state={map}

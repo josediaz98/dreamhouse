@@ -39,7 +39,7 @@ export function Hero({ lotCount, children }: HeroProps) {
               <span className="tabular-nums text-fg">{lotCount}</span> lots
             </>
           )}
-          {" · "}live county data
+          {" · "}county GIS + Design Manual
         </span>
       </p>
 

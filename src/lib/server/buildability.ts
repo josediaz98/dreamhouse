@@ -195,7 +195,7 @@ function checkCoverage(map: FieldMap, rules: readonly Rule[], program: HouseProg
     required: rule.value,
     actual: pct,
     verdict: ok ? "pass" : "fail",
-    detail: `Footprint plus decks ${fmt(used)} sq ft of ${fmt(allowed)} sq ft allowed (${rule.value}% of ${fmt(acres)} ac).`,
+    detail: `Footprint plus decks ${fmt(used)} sq ft of ${fmt(allowed)} sq ft allowed (${rule.value}% of ${acres.toLocaleString("en-US", { maximumFractionDigits: 2 })} ac).`,
     sources: [...sourcesOf(acresField), rule.source],
     askKeys: [],
   };

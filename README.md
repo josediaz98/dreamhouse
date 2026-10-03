@@ -49,7 +49,7 @@ At a 26 ft, 2-story house, the stored facts rule out 2 of 6 lots on the Design M
 - **Search-result summaries, not listing pages.** The 6 lots come from search-result summaries captured 2026-10-03. Every listing-sourced field says so in its source label.
 - **Setbacks are not evaluated.** They are seeded as rules, but no check or verdict claims a setback result, because the house program has no lot dimensions.
 - **Flood zone D stays unknown.** FEMA zone D means flood hazard undetermined. No lot reaches pass until a seller answers.
-- **Seller answers in the demo are typed by the presenter.** They are not stored as verified data.
+- **Seller answers in the demo are entered by the presenter.** They are not stored as verified data.
 - **Design Manual is the 2013 edition.** The CC&Rs are behind a login and are not used.
 - **County GIS is for planning purposes only,** not parcel-specific decisions. Two lots have no resolved APN and are drawn dashed on the parcel sheet.
 - **Payments.** Metering is sandbox-only and off when no key is configured: each successful `get_spec` or `check_buildability` call sends one Stripe Billing meter event (`lotline_tool_call`, $0.50 per call on the sandbox subscription) when `STRIPE_SECRET_KEY` and `STRIPE_METER_CUSTOMER_ID` are set. Without them nothing is sent and calls are free. MPP settlement was dropped (an MPP profile needs account activation); the HTTP 402 challenge code stays but is off without `STRIPE_PROFILE_ID`. Verified on 2026-10-03, locally and on the deployed site: a priced call adds one "Lotline tool call, $0.50" line quantity on the sandbox invoice preview. The deployed site meters into the Stripe test-mode account; no real money moves.
