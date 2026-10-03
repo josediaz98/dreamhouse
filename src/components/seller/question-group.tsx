@@ -16,7 +16,7 @@ export interface QuestionGroupData {
   readonly questions: readonly Question[];
 }
 
-function OpenRow({ question, onAnswered }: { readonly question: Question; readonly onAnswered: () => void }) {
+export function OpenRow({ question, onAnswered }: { readonly question: Question; readonly onAnswered: () => void }) {
   const [answer, setAnswer] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -95,7 +95,7 @@ function OpenRow({ question, onAnswered }: { readonly question: Question; readon
   );
 }
 
-function AnsweredRow({ question }: { readonly question: Question }) {
+export function AnsweredRow({ question }: { readonly question: Question }) {
   return (
     <li className="flex items-baseline gap-3 px-4 py-3 sm:px-5">
       <span aria-hidden className="font-mono text-sm text-pass">
