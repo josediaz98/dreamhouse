@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { SiteHeader } from "@/components/site-header";
+import { AERIAL_CREDIT } from "@/lib/aerials";
 import "./site-theme.css";
 
 const SOURCES = [
@@ -30,6 +31,7 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
               County GIS data is for planning purposes only, not parcel-specific decisions.
             </p>
             <p>Seller answers in the demo are typed by the presenter.</p>
+            <p className="text-xs text-faint">{AERIAL_CREDIT}. Parcel outlines: Sonoma County CDR_Parcels.</p>
           </div>
         </div>
       </footer>

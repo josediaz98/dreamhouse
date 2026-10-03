@@ -7,6 +7,7 @@ import type { LotChange, LotView } from "@/lib/client/use-lots";
 import { CopyButton } from "@/components/copy-button";
 import { DemoBadge } from "@/components/demo-badge";
 import { ErrorBanner } from "@/components/error-banner";
+import { LotAerial } from "@/components/lot-aerial";
 import { TracePanel, type TraceQuestion } from "@/components/trace-panel";
 import { VerdictBadge } from "@/components/verdict-badge";
 import { VerdictList } from "@/components/verdict-list";
@@ -132,6 +133,13 @@ function LotCard({
         onClick={onToggle}
         className="group flex w-full flex-wrap items-center gap-x-3 gap-y-2.5 p-4 text-left transition-colors duration-150 hover:bg-raised sm:flex-nowrap sm:gap-5 sm:px-5"
       >
+        <LotAerial
+          propertyId={property.id}
+          address={street ?? streetOf(property)}
+          verdict={verdict}
+          variant="thumb"
+          className="shrink-0 rounded-md max-sm:order-first max-sm:aspect-[2/1] max-sm:basis-full sm:aspect-[3/2] sm:w-32"
+        />
         <span className="shrink-0 sm:w-20">
           <VerdictBadge verdict={verdict} />
         </span>
@@ -159,6 +167,12 @@ function LotCard({
       </button>
       {open && card.result ? (
         <div id={panelId} className="expand-in border-t border-line bg-bg/40">
+          <LotAerial
+            propertyId={property.id}
+            address={street ?? streetOf(property)}
+            verdict={verdict}
+            variant="header"
+          />
           <VerdictList result={card.result} bare />
         </div>
       ) : null}

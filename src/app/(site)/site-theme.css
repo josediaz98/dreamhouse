@@ -29,6 +29,37 @@
 }
 .expand-in { animation: expand-in 0.22s var(--ease-out-quint) 1; }
 
+/* Hero aerial: a very slow Ken Burns drift. Transform only, so it stays on the compositor. */
+@keyframes kenburns {
+  from { transform: scale(1.06) translate3d(0, 0, 0); }
+  to { transform: scale(1.16) translate3d(-2.5%, -1.5%, 0); }
+}
+.hero-kenburns {
+  transform-origin: 40% 50%;
+  animation: kenburns 26s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+/* Scrim from tokens: darkest behind the copy (WCAG AA for muted text), lighter at the edges,
+   and fading into the page background at the bottom. */
+.hero-scrim {
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in oklab, var(--color-bg) 45%, transparent) 0%,
+      transparent 18%,
+      transparent 70%,
+      var(--color-bg) 100%
+    ),
+    radial-gradient(
+      ellipse 62% 58% at 50% 50%,
+      color-mix(in oklab, var(--color-bg) 88%, transparent) 0%,
+      color-mix(in oklab, var(--color-bg) 76%, transparent) 55%,
+      color-mix(in oklab, var(--color-bg) 42%, transparent) 100%
+    );
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .row-flash, .question-in, .dot-running, .popover-in, .expand-in { animation: none; }
+  .row-flash, .question-in, .dot-running, .popover-in, .expand-in, .hero-kenburns { animation: none; }
+  .hero-kenburns { transform: none; will-change: auto; }
 }
