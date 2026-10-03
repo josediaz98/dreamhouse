@@ -17,7 +17,7 @@
 | What outcome do we sell? (not seats, not tokens) | Buyer agent pays per spec query (Stripe MPP, test mode). Seller pays per qualified visit. Metric: **site visits avoided** |
 | Why would an agent choose this over what it has today? | Listings are prose and PDFs. Rules (height, coverage, setbacks, fire zone, septic) sit in a 52-page manual and county GIS. No source answers "can I build this here?" in structured form |
 | Out of scope today | 3D design, financing, legal, professional network, live scraping. These go on the vision slide only |
-| Repo URL | _TBD (create now — required field)_ |
+| Repo URL | https://github.com/josediaz98/dreamhouse (private for now; flip to public before submitting) |
 | Demo URL | _TBD (deploy early — required field)_ |
 
 ## 1. Rules and scoring
@@ -196,7 +196,7 @@ Prefer a screen recording of the deployed URL over local. Record a backup take.
 | Status | Task | Owner | Notes |
 |---|---|---|---|
 | ✅ | Lock idea, fill §0 | Jose | Sea Ranch, spec layer + buyer agent |
-| ⬜ | Create GitHub repo | | Needed for required field |
+| ✅ | Create GitHub repo | Jose | Done, private. **Flip to public before submitting.** Work on branch `dev` (a hook blocks edits on `main`) |
 | ⬜ | Supabase project (+ Compute alpha access) | | Ask Matt. Compute is optional for this build |
 | ⬜ | Claim credits: Claude, Vercel, Gemini, Stripe | | Check email from the hackathon address |
 | ⬜ | Deploy empty Next.js app on Vercel | | Gives Demo URL |
