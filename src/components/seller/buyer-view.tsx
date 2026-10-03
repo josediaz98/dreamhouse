@@ -56,9 +56,9 @@ function Reason({ result }: { readonly result: BuildabilityResult | null }) {
   return <p className="text-sm text-pass">Passes every rule we can check</p>;
 }
 
-function changeText(change: LotChange): string {
-  if (change.from !== change.to) return `${change.from ?? "new"} → ${change.to ?? "n/a"}`;
-  return `${change.unknownFrom} → ${change.unknownTo} unknown`;
+/** Only a verdict flip is shown; field counts would contradict the rule count in the reason line. */
+function changeText(change: LotChange): string | null {
+  return change.from !== change.to ? `${change.from ?? "new"} → ${change.to ?? "n/a"}` : null;
 }
 
 function BuyerCard({ lot, change }: { readonly lot: LotView; readonly change: LotChange | undefined }) {
@@ -78,7 +78,7 @@ function BuyerCard({ lot, change }: { readonly lot: LotView; readonly change: Lo
         address={street}
         verdict={verdict}
         variant="thumb"
-        className="aspect-[3/2] w-20 shrink-0 rounded-md sm:w-24"
+        className="aspect-[3/2] w-24 shrink-0 rounded-md sm:w-28"
       />
       <div className="flex min-w-0 flex-1 flex-col gap-1">
         <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
@@ -93,7 +93,7 @@ function BuyerCard({ lot, change }: { readonly lot: LotView; readonly change: Lo
         <span className="break-words text-base font-medium text-fg">{street}</span>
         <span className="font-mono text-xs tabular-nums text-muted">
           {formatUsd(property.priceUsd)} · {formatAcres(property.acres)}
-          {change ? <span className="text-accent"> · {changeText(change)}</span> : null}
+          {change && changeText(change) ? <span className="text-accent"> · {changeText(change)}</span> : null}
         </span>
         <Reason result={lot.result} />
       </div>

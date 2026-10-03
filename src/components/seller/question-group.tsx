@@ -97,8 +97,8 @@ function OpenRow({ question, onAnswered }: { readonly question: Question; readon
 
 function AnsweredRow({ question }: { readonly question: Question }) {
   return (
-    <li className="flex items-start gap-3 px-4 py-3 sm:px-5">
-      <span aria-hidden className="mt-0.5 font-mono text-sm text-pass">
+    <li className="flex items-baseline gap-3 px-4 py-3 sm:px-5">
+      <span aria-hidden className="font-mono text-sm text-pass">
         ✓
       </span>
       <span className="min-w-0 text-sm">
@@ -133,7 +133,7 @@ export function QuestionGroup({
           address={group.street}
           verdict={group.verdict}
           variant="thumb"
-          className="aspect-[3/2] w-24 shrink-0 rounded-md sm:w-28"
+          className="aspect-[3/2] w-28 shrink-0 rounded-md sm:w-32"
         />
         <div className="flex min-w-0 flex-col gap-1">
           <h2 id={headingId} className="break-words font-sans text-base font-medium text-fg">
