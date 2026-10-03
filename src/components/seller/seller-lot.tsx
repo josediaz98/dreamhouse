@@ -107,7 +107,7 @@ export function SellerLot({ propertyId }: { readonly propertyId: string }) {
             change ? "row-flash border-accent" : "border-line bg-bg/40"
           }`}
         >
-          <span className="origin-left scale-125 self-start sm:self-center">
+          <span className="shrink-0 self-start sm:self-center">
             <VerdictBadge verdict={verdict} />
           </span>
           <LotReason result={lot.result} className="text-base sm:text-lg" />
