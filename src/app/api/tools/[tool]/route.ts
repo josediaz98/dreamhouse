@@ -1,5 +1,6 @@
 import { MCP_TOOLS } from "@/lib/contract";
 import { agentId, errorResponse, getRepo } from "@/lib/server/http";
+import { meterToolCall } from "@/lib/server/stripe-metering";
 import { charge, paymentRef, paywallEnabled, TOOL_PRICES_USD } from "@/lib/server/paywall";
 import { isToolName, runTool, TOOL_SCHEMAS } from "@/lib/server/tools";
 
@@ -29,6 +30,7 @@ export async function POST(request: Request, ctx: RouteContext<"/api/tools/[tool
     const output = await runTool(getRepo(), tool, body);
     const res = gated ? gated.withReceipt(Response.json(output)) : Response.json(output);
     await getRepo().logCall({ agentId: agentId(request), tool, amountUsd: gated ? Number(price) : 0, paymentRef: gated ? paymentRef(res) : null });
+    meterToolCall(tool);
     return res;
   } catch (e) {
     return errorResponse(e);

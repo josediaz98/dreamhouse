@@ -45,7 +45,7 @@ At a 26 ft, 2-story house, the stored facts rule out 2 of 6 lots on the Design M
 - **Seller answers in the demo are typed by the presenter.** They are not stored as verified data.
 - **Design Manual is the 2013 edition.** The CC&Rs are behind a login and are not used.
 - **County GIS is for planning purposes only,** not parcel-specific decisions. Two lots have no resolved APN and are drawn dashed on the parcel sheet.
-- **Payments.** The paywall issues a real HTTP 402 challenge. Settlement in the Stripe sandbox has not been verified. Without Stripe keys configured, calls are free and logged as free.
+- **Payments.** Metering is sandbox-only and off when no key is configured: each successful `get_spec` or `check_buildability` call sends one Stripe Billing meter event (`lotline_tool_call`, $0.50 per call on the sandbox subscription) when `STRIPE_SECRET_KEY` and `STRIPE_METER_CUSTOMER_ID` are set. Without them nothing is sent and calls are free. MPP settlement was dropped (an MPP profile needs account activation); the HTTP 402 challenge code stays but is off without `STRIPE_PROFILE_ID`. Metering has not been verified against the real sandbox yet.
 - **Sea Ranch only.** Other jurisdictions need their own rules.
 - Not legal, engineering or financial advice.
 
@@ -55,7 +55,7 @@ At a 26 ft, 2-story house, the stored facts rule out 2 of 6 lots on the Design M
 |---|---|
 | Supabase | Postgres with RLS, Realtime on `spec_fields` and `questions`, migrations in `supabase/migrations` |
 | Vercel | Hosting, Next.js App Router, `mcp-handler` for the MCP server |
-| Stripe | Machine Payments Protocol (`mppx`) pay-per-call challenge, sandbox |
+| Stripe | Billing meter events per priced tool call (sandbox); `mppx` 402 challenge code, off |
 | Claude | Listing fact extraction and the buyer-agent loop through the Anthropic SDK |
 | Claude Code | Built with it; also works as the MCP client |
 

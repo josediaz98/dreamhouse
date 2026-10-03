@@ -2,7 +2,7 @@
 
 Env var names only (values live in `.env.local` and Vercel, never in git):
 `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY`,
-`ANTHROPIC_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_PROFILE_ID`.
+`ANTHROPIC_API_KEY`, `STRIPE_SECRET_KEY`, `STRIPE_PROFILE_ID`, `STRIPE_METER_CUSTOMER_ID`.
 
 ## Once a Supabase project exists (personal org, never LAFA)
 
@@ -21,7 +21,15 @@ pnpm exec tsx scripts/ingest.ts --dry          # in-memory repo, live GIS, print
 DREAMHOUSE_REPO=memory pnpm dev                # serves the coordinator fixtures from memory (never in production)
 ```
 
-## Paywall (needs STRIPE_SECRET_KEY + STRIPE_PROFILE_ID)
+## Stripe metering (needs STRIPE_SECRET_KEY + STRIPE_METER_CUSTOMER_ID)
+
+After each successful priced tool call (`get_spec`, `check_buildability`; REST and MCP) one Billing meter event is sent:
+`stripe.billing.meterEvents.create({ event_name: "lotline_tool_call", payload: { stripe_customer_id, value: "1" } })`.
+It runs after the response with a 2.5 s timeout. A missing var, a Stripe error or a timeout changes nothing in the response; failures are
+logged with `console.warn` as error class and code only. Independent of the paywall below. Sandbox only; with no `STRIPE_SECRET_KEY` it does nothing.
+Code: `src/lib/server/stripe-metering.ts`.
+
+## Paywall (needs STRIPE_SECRET_KEY + STRIPE_PROFILE_ID; off, MPP settlement dropped)
 
 Priced tools: `get_spec`, `check_buildability` at 0.50 USD. Without both vars the paywall is off and calls log as free.
 
