@@ -17,28 +17,30 @@ export default function SiteLayout({ children }: { children: React.ReactNode }) 
       <SiteHeader />
       <main className="flex-1">{children}</main>
       <footer className="border-t border-line">
-        <div className="mx-auto grid w-full max-w-6xl gap-8 px-4 py-12 text-sm text-muted sm:px-6 md:grid-cols-[1fr_2fr]">
-          <div className="flex flex-col gap-3">
-            <Image src="/brand/wordmark.svg" alt="Lotline" width={120} height={24} unoptimized className="h-6 w-auto self-start" />
-            <p className="text-xs text-faint">
+        <div className="mx-auto grid w-full max-w-6xl gap-x-10 gap-y-3 px-4 py-6 text-xs leading-5 text-faint sm:px-6 md:grid-cols-2">
+          <div className="flex flex-col gap-1.5">
+            <p className="flex items-center gap-3">
+              <Image src="/brand/wordmark.svg" alt="Lotline" width={80} height={16} unoptimized className="h-4 w-auto opacity-80" />
+              <span>
+                For agents: <a href="/llms.txt" className="underline underline-offset-2 hover:text-fg">/llms.txt</a> · MCP at{" "}
+                <code className="font-mono">/mcp</code>
+              </span>
+            </p>
+            <p>
               Pricing: <code className="font-mono">get_spec</code> and <code className="font-mono">check_buildability</code> are
               metered at $0.50 per call in Stripe Billing (test mode, no real charges). Search and seller questions are free.
             </p>
-            <p className="text-xs text-faint">
-              For agents: <a href="/llms.txt" className="underline underline-offset-2 hover:text-fg">/llms.txt</a> ·{" "}
-              MCP at <code className="font-mono">/mcp</code>
-            </p>
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1.5">
             <p>
-              <span className="label mr-2">Data</span>
+              <span className="mr-1.5 font-mono uppercase tracking-wide text-muted">Data</span>
               {SOURCES.join(" · ")}.
             </p>
             <p>
-              County GIS data is for planning purposes only, not parcel-specific decisions.
+              County GIS data is for planning purposes only, not parcel-specific decisions. Seller answers in the demo are
+              typed by the presenter.
             </p>
-            <p>Seller answers in the demo are typed by the presenter.</p>
-            <p className="text-xs text-faint">{AERIAL_CREDIT}. Parcel outlines: Sonoma County CDR_Parcels.</p>
+            <p>{AERIAL_CREDIT}. Parcel outlines: Sonoma County CDR_Parcels.</p>
           </div>
         </div>
       </footer>
