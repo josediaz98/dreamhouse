@@ -40,20 +40,18 @@ Metering only fires on a host that has `STRIPE_SECRET_KEY` and `STRIPE_METER_CUS
 - Voice: quiet room, same distance from the mic, speak the voice-over lines exactly as written in `script.md`. Do not speak over the cue's on-screen action; pause during page loads.
 - Terminal for clip D: one Terminal window, font size 18+, dark theme, nothing else visible. Run `claude mcp add --transport http lotline https://dreamhouse-chi.vercel.app/mcp` once, then start `claude --allowedTools "mcp__lotline__*"` so tool calls are not interrupted by permission prompts.
 
-## Clips
+## Clips (script v3)
 
 | Clip | Cues | Length | What to record | Notes |
 |---|---|---|---|---|
-| A | 1–2 | ~22 s | Landing hero (2 s), press the arrow, Results at 26 ft (two red "Ruled out" cards). Then the Design Manual PDF (`https://www.tsra.org/wp-content/uploads/2020/06/DM_v7.pdf`), scroll fast and stop on the 24 ft height rule. Then the parcel sheet | Find the page with §6.3 before recording and keep it open in a second tab |
-| B | 3 | none | Nothing to record. Claude uses `title.png` | — |
-| C | — | — | Reserved (not used) | — |
-| D | 4 | ~35 s of narration; the wait is cut and sped up | Terminal: paste the exact prompt from `script.md`; let the answer finish; stay on the final answer for 5 s | Record the whole run. If the answer has setbacks stated as passed, or different lots ruled out, redo it |
-| E | 5–6 | ~25 s | In Results, **View checks** on 35604 Timber Ridge Road (card expands). Then scroll to section 03 "“I don’t know” vs a sourced answer" | State must be clean (reset first) |
-| F | 7–8 | ~50 s | Parcel sheet, then split view: `/seller` left, landing list right. Answer the 3 Timber Ridge questions with: `Septic permitted for 3 bedrooms` / `Connected to the Sea Ranch Water Company` / `Outside the special flood hazard area`. Wait for the highlight after each | Reset before every take. Do not touch other lots |
-| G | 9 | ~13 s | Stripe test-mode dashboard: customer "Demo buyer agent", `https://dashboard.stripe.com/test/customers/cus_VNJlUF8WwghCY7`, upcoming invoice with the metered line | Record after D, E and F so `N` is more than 1 |
-| — | 10 | none | Claude uses `end.png` | — |
+| A | 1–4 | ~38 s | Private window, open `https://dreamhouse-chi.vercel.app/?tour=1`. Onboarding step 1 (hold on the left card, then the right card), **Next**, step 2, **Next**, step 3, **Search lots**, results load | `?tour=1` always opens the tour. Results take ~2 s to load on production; keep talking |
+| D | 5 | ~30 s narrated; wait sped up | Terminal: paste the exact prompt from `script.md`; let the answer finish; hold 5 s | Retake if the answer contradicts cue 6 |
+| E | 6–7 | ~24 s | In Results, **View checks** on 35604 Timber Ridge Road (aerial + checks). Then the **Map** toggle | State must be clean |
+| F | 8 | ~26 s | `https://dreamhouse-chi.vercel.app/seller`. Timber Ridge card: for septic, water, flood click the **Demo answers** chip, then **Send**; wait for the highlight on the right after each | Reset before every take |
+| G | 9–10 | ~24 s | Stripe test-mode dashboard: `https://dreamhouse-chi.vercel.app` metering customer "Demo buyer agent" (`https://dashboard.stripe.com/test/customers/cus_VNJlUF8WwghCY7`), upcoming invoice line. Then `https://dreamhouse-chi.vercel.app/llms.txt` | Record after A–F so `N` > 1 |
+| — | 11 | 8 s | Claude adds `end.png` | — |
 
-Order of recording: D first (it calls the tools and sets up the metering count), then A, E, F, G. Reset the database before E and again before each retake of F.
+Order: D first, then A, E, F, G. Run `pnpm demo:reset` before E and before every take of F.
 
 ## Reset and check (Claude can run these; ask "resetea")
 
