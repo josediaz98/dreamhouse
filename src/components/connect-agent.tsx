@@ -93,7 +93,7 @@ export function ConnectAgent() {
           id={panelId}
           role="dialog"
           aria-label="Connect your agent"
-          className="popover-in absolute right-0 top-full z-30 mt-2 w-[min(32rem,calc(100vw-2rem))] rounded-lg border border-line-strong bg-surface shadow-raised"
+          className="popover-in absolute right-0 top-full z-30 mt-2 whitespace-normal text-left w-[min(32rem,calc(100vw-2rem))] rounded-lg border border-line-strong bg-surface shadow-raised"
         >
           <div role="tablist" aria-label="Connection method" className="flex gap-1 border-b border-line p-1.5">
             {TAB_ORDER.map((key) => (
@@ -114,7 +114,7 @@ export function ConnectAgent() {
           <div role="tabpanel" className="flex flex-col gap-3 p-4">
             <p className="text-sm text-muted">{content.hint}</p>
             <div className="flex items-start gap-2 rounded-md border border-line bg-bg p-2 pl-3">
-              <pre className="min-w-0 flex-1 overflow-x-auto whitespace-pre py-1.5 font-mono text-xs leading-5 text-fg">
+              <pre className="min-w-0 flex-1 whitespace-pre-wrap break-all py-1.5 font-mono text-xs leading-5 text-fg">
                 {content.code}
               </pre>
               <CopyButton text={content.code} />

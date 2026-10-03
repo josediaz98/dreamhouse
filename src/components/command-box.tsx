@@ -259,10 +259,10 @@ export function CommandBox({
               placeholder={presets[0] ? streetOf(presets[0].item.property) : "35604 Timber Ridge Road"}
               autoComplete="off"
               autoFocus
-              className="mt-2 w-full rounded-md border border-transparent bg-transparent px-0 py-1 text-lg text-fg placeholder:text-faint focus-visible:outline-offset-4"
+              className="mt-2 w-full rounded-md border border-line bg-bg px-3 py-2 text-base text-fg placeholder:text-faint sm:text-lg"
             />
-            <div className="mt-2 flex flex-wrap items-center gap-2">
-              <span className="text-xs text-faint">Try</span>
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <span className="text-xs text-faint max-sm:basis-full">Try a lot</span>
               {presets.map((lot) => (
                 <button
                   key={lot.item.property.id}

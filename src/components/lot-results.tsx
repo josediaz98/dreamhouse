@@ -130,12 +130,12 @@ function LotCard({
         aria-expanded={open}
         aria-controls={panelId}
         onClick={onToggle}
-        className="group flex w-full items-start gap-3 p-4 text-left transition-colors duration-150 hover:bg-raised sm:items-center sm:gap-5 sm:px-5"
+        className="group flex w-full flex-wrap items-center gap-x-3 gap-y-2.5 p-4 text-left transition-colors duration-150 hover:bg-raised sm:flex-nowrap sm:gap-5 sm:px-5"
       >
-        <span className="w-20 shrink-0 pt-0.5 sm:pt-0">
+        <span className="shrink-0 sm:w-20">
           <VerdictBadge verdict={verdict} />
         </span>
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
+        <span className="flex min-w-0 flex-col gap-1 max-sm:order-last max-sm:basis-full sm:flex-1">
           <span className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
             <span className="break-words text-base font-medium text-fg">{street ?? streetOf(property)}</span>
             {rest.length > 0 ? (
@@ -152,8 +152,8 @@ function LotCard({
           </span>
           <Reason card={card} />
         </span>
-        <span className="mt-0.5 inline-flex shrink-0 items-center gap-2 rounded-md text-sm text-muted transition-colors duration-150 group-hover:text-fg sm:mt-0 sm:border sm:border-line-strong sm:px-3 sm:py-1.5">
-          <span className="max-sm:sr-only">{open ? "Hide checks" : "View checks"}</span>
+        <span className="inline-flex shrink-0 items-center gap-2 rounded-md text-sm text-muted transition-colors duration-150 group-hover:text-fg max-sm:ml-auto sm:border sm:border-line-strong sm:px-3 sm:py-1.5">
+          <span className="max-sm:text-xs">{open ? "Hide checks" : "View checks"}</span>
           <Chevron open={open} />
         </span>
       </button>
@@ -233,7 +233,7 @@ export function LotResults({
 
   const counts = [
     pass > 0 ? `${pass} ${pass === 1 ? "passes" : "pass"}` : null,
-    `${eliminatedCount} ruled out`,
+    eliminatedCount > 0 || sorted.length > 1 ? `${eliminatedCount} ruled out` : null,
     unknown > 0 ? `${unknown} need${unknown === 1 ? "s" : ""} answers from the seller` : null,
   ].filter((part): part is string => part !== null);
 
