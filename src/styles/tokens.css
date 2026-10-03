@@ -1,0 +1,97 @@
+/*
+ * DREAMHOUSE design tokens. Owner: Brand lane.
+ * Dark only. One accent (cedar ochre). Verdict colours are semantic, not decorative.
+ * Values and contrast results: docs/brand.md. Use utilities (bg-surface, text-pass),
+ * never hard-coded colours, in src/app/(site) and src/components.
+ */
+
+/* Primitives: literal values. Generates utilities such as bg-ink-900 and text-accent. */
+@theme {
+  /* Neutral ramp: weathered cedar fog, slightly green-warm. */
+  --color-ink-950: #0d0f0e;
+  --color-ink-900: #131614;
+  --color-ink-850: #1a1e1b;
+  --color-ink-800: #222723;
+  --color-ink-700: #2a302c;
+  --color-ink-600: #3b423d;
+  --color-ink-500: #5a625b;
+  --color-ink-400: #858d85;
+  --color-ink-300: #a3aaa2;
+  --color-ink-200: #c9cdc5;
+  --color-ink-100: #ecebe4;
+
+  /* The one accent: sunlit cedar. */
+  --color-accent: #d8a24a;
+  --color-accent-strong: #e6b660;
+  --color-accent-ink: #14100a;
+
+  /* Verdicts. `unknown` is a cool fog blue: distinct from pass/fail, calm, never red or amber. */
+  --color-pass: #7fbf8e;
+  --color-pass-soft: #222e25;
+  --color-pass-line: #3c5a45;
+  --color-fail: #e8695c;
+  --color-fail-soft: #31221e;
+  --color-fail-line: #6a3a33;
+  --color-unknown: #93a8e0;
+  --color-unknown-soft: #252a31;
+  --color-unknown-line: #3f4a66;
+
+  /* Type */
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.125rem;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.375rem;
+  --text-base: 1rem;
+  --text-base--line-height: 1.625rem;
+  --text-lg: 1.125rem;
+  --text-lg--line-height: 1.75rem;
+  --text-xl: 1.375rem;
+  --text-xl--line-height: 1.875rem;
+  --text-2xl: 1.75rem;
+  --text-2xl--line-height: 2.125rem;
+  --text-3xl: 2.25rem;
+  --text-3xl--line-height: 2.5rem;
+  --text-4xl: 3rem;
+  --text-4xl--line-height: 3.25rem;
+  --text-5xl: 4rem;
+  --text-5xl--line-height: 4.25rem;
+  --text-6xl: 5.5rem;
+  --text-6xl--line-height: 5.5rem;
+
+  --tracking-display: -0.02em;
+  --tracking-label: 0.08em;
+
+  /* Spacing: 4px grid. Tailwind derives p-*, gap-*, m-* from this. */
+  --spacing: 0.25rem;
+
+  /* Radius: restrained. Cards 8px, controls 6px, pills only for status chips. */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+
+  --shadow-raised: 0 1px 0 0 rgb(255 255 255 / 0.04) inset, 0 8px 24px -12px rgb(0 0 0 / 0.6);
+  --ease-out-quint: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Semantic aliases: reference primitives, so `inline` keeps the var() chain. */
+@theme inline {
+  --color-bg: var(--color-ink-950);
+  --color-surface: var(--color-ink-900);
+  --color-raised: var(--color-ink-850);
+  --color-line: var(--color-ink-700);
+  --color-line-strong: var(--color-ink-600);
+  --color-fg: var(--color-ink-100);
+  --color-muted: var(--color-ink-300);
+  --color-faint: var(--color-ink-400);
+
+  /* Font families come from src/styles/fonts.ts (next/font CSS variables). */
+  --font-sans: var(--font-instrument-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+:root {
+  color-scheme: dark;
+}
