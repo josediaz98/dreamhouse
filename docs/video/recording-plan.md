@@ -44,11 +44,11 @@ Metering only fires on a host that has `STRIPE_SECRET_KEY` and `STRIPE_METER_CUS
 
 | Clip | Cues | Length | What to record | Notes |
 |---|---|---|---|---|
-| A | 1–2 | ~22 s | Landing, Buyer's agent view at 26 ft (two red "Ruled out" rows). Then the Design Manual PDF (`https://www.tsra.org/wp-content/uploads/2020/06/DM_v7.pdf`), scroll fast and stop on the 24 ft height rule. Then the parcel sheet | Find the page with §6.3 before recording and keep it open in a second tab |
+| A | 1–2 | ~22 s | Landing hero (2 s), press the arrow, Results at 26 ft (two red "Ruled out" cards). Then the Design Manual PDF (`https://www.tsra.org/wp-content/uploads/2020/06/DM_v7.pdf`), scroll fast and stop on the 24 ft height rule. Then the parcel sheet | Find the page with §6.3 before recording and keep it open in a second tab |
 | B | 3 | none | Nothing to record. Claude uses `title.png` | — |
 | C | — | — | Reserved (not used) | — |
 | D | 4 | ~35 s of narration; the wait is cut and sped up | Terminal: paste the exact prompt from `script.md`; let the answer finish; stay on the final answer for 5 s | Record the whole run. If the answer has setbacks stated as passed, or different lots ruled out, redo it |
-| E | 5–6 | ~25 s | Preset **35604 Timber Ridge Road** → Check buildability → Readable verdict. Then scroll to "Guessing vs knowing" | State must be clean (reset first) |
+| E | 5–6 | ~25 s | In Results, **View checks** on 35604 Timber Ridge Road (card expands). Then scroll to section 03 "Guessing vs knowing" | State must be clean (reset first) |
 | F | 7–8 | ~50 s | Parcel sheet, then split view: `/seller` left, landing list right. Answer the 3 Timber Ridge questions with: `Septic permitted for 3 bedrooms` / `Connected to the Sea Ranch Water Company` / `Outside the special flood hazard area`. Wait for the highlight after each | Reset before every take. Do not touch other lots |
 | G | 9 | ~13 s | Stripe test-mode dashboard: customer "Demo buyer agent", `https://dashboard.stripe.com/test/customers/cus_VNJlUF8WwghCY7`, upcoming invoice with the metered line | Record after D, E and F so `N` is more than 1 |
 | — | 10 | none | Claude uses `end.png` | — |
