@@ -1,5 +1,6 @@
 /** Supabase-backed Repo. Service role only: import from server routes and scripts, never from client code. */
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
+import ws from "ws";
 import {
   TABLES,
   type CallReceipt,
@@ -18,6 +19,7 @@ import {
 import { ConflictError, NotFoundError, type NewProperty, type Repo } from "@/lib/server/repo";
 
 type Row = Record<string, unknown>;
+type RealtimeTransport = NonNullable<NonNullable<NonNullable<Parameters<typeof createClient>[2]>["realtime"]>["transport"]>;
 
 const s = (v: unknown): string | null => (typeof v === "string" ? v : null);
 const n = (v: unknown): number | null => (typeof v === "number" ? v : typeof v === "string" && v !== "" && Number.isFinite(Number(v)) ? Number(v) : null);
@@ -91,11 +93,12 @@ function ok<T>(res: { data: T | null; error: { message: string; code?: string } 
   return res.data;
 }
 
+/** `ws` because Node 20 has no global WebSocket and supabase-js builds a realtime client eagerly. */
 export function serviceClient(): SupabaseClient {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const key = process.env.SUPABASE_SERVICE_ROLE_KEY;
   if (!url || !key) throw new ConfigError("Supabase is not configured (NEXT_PUBLIC_SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY)");
-  return createClient(url, key, { auth: { persistSession: false } });
+  return createClient(url, key, { auth: { persistSession: false }, realtime: { transport: ws as unknown as RealtimeTransport } });
 }
 
 export class ConfigError extends Error {}
