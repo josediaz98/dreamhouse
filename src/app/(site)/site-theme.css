@@ -59,6 +59,20 @@
     );
 }
 
+/* Phones: the copy spans the full width, so the scrim stays dark edge to edge. */
+@media (max-width: 639px) {
+  .hero-scrim {
+    background:
+      linear-gradient(to bottom, transparent 0%, transparent 70%, var(--color-bg) 100%),
+      radial-gradient(
+        ellipse 90% 60% at 50% 50%,
+        color-mix(in oklab, var(--color-bg) 90%, transparent) 0%,
+        color-mix(in oklab, var(--color-bg) 87%, transparent) 60%,
+        color-mix(in oklab, var(--color-bg) 70%, transparent) 100%
+      );
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .row-flash, .question-in, .dot-running, .popover-in, .expand-in, .hero-kenburns { animation: none; }
   .hero-kenburns { transform: none; will-change: auto; }

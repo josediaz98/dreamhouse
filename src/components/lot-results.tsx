@@ -138,7 +138,9 @@ function LotCard({
           address={street ?? streetOf(property)}
           verdict={verdict}
           variant="thumb"
-          className="shrink-0 rounded-md max-sm:order-first max-sm:aspect-[2/1] max-sm:basis-full sm:aspect-[3/2] sm:w-32"
+          className={`shrink-0 rounded-md max-sm:order-first max-sm:aspect-[2/1] max-sm:basis-full sm:aspect-[3/2] sm:w-32 ${
+            open ? "max-sm:hidden" : ""
+          }`}
         />
         <span className="shrink-0 sm:w-20">
           <VerdictBadge verdict={verdict} />
