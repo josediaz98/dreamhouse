@@ -1,10 +1,12 @@
 "use client";
 
+import { useRef, useState } from "react";
 import { DEFAULT_PROGRAM } from "@/lib/client/types";
 import { useLots } from "@/lib/client/use-lots";
 import { BeforeAfter } from "@/components/before-after";
 import { CountersStrip } from "@/components/counters-strip";
-import { Playground } from "@/components/playground";
+import { ParcelSheet } from "@/components/parcel-sheet";
+import { Playground, type PlaygroundHandle } from "@/components/playground";
 import { RankedLots } from "@/components/ranked-lots";
 import { ReceiptsPanel } from "@/components/receipts-panel";
 
@@ -29,6 +31,8 @@ function Section({
 
 export function BuyerDemo() {
   const lotsState = useLots(DEFAULT_PROGRAM);
+  const playground = useRef<PlaygroundHandle>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
   const openQuestions = new Set(
     lotsState.lots.flatMap(({ result }) => result?.openQuestionIds ?? []),
   ).size;
@@ -36,8 +40,21 @@ export function BuyerDemo() {
   return (
     <>
       <Section id="demo" title="Ask the lot">
-        <Playground lots={lotsState.lots} loading={lotsState.status === "loading"} />
+        <Playground
+          ref={playground}
+          lots={lotsState.lots}
+          loading={lotsState.status === "loading"}
+          onLotChange={setSelectedId}
+        />
         <RankedLots state={lotsState} />
+      </Section>
+
+      <Section title="Where the facts stop, the line is dashed.">
+        <ParcelSheet
+          state={lotsState}
+          selectedId={selectedId}
+          onSelect={(id) => playground.current?.runLot(id)}
+        />
       </Section>
 
       <Section title="Guessing vs knowing">

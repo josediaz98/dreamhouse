@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState, type FormEvent } from "react";
+import { useImperativeHandle, useRef, useState, type FormEvent, type Ref } from "react";
 import type {
   BuildabilityResult,
   Property,
@@ -62,12 +62,20 @@ function plural(n: number, word: string): string {
   return `${n} ${word}${n === 1 ? "" : "s"}`;
 }
 
+export interface PlaygroundHandle {
+  /** Select a lot by id and run the full check, as if its chip was clicked. */
+  readonly runLot: (propertyId: string) => void;
+}
+
 interface PlaygroundProps {
   readonly lots: readonly LotView[];
   readonly loading: boolean;
+  readonly ref?: Ref<PlaygroundHandle>;
+  /** Called with the id of the lot being checked. */
+  readonly onLotChange?: (propertyId: string) => void;
 }
 
-export function Playground({ lots, loading }: PlaygroundProps) {
+export function Playground({ lots, loading, ref, onLotChange }: PlaygroundProps) {
   const [query, setQuery] = useState("");
   const [phase, setPhase] = useState<Phase>("idle");
   const [events, setEvents] = useState<readonly TraceEvent[]>([]);
@@ -120,6 +128,7 @@ export function Playground({ lots, loading }: PlaygroundProps) {
     }
     const lot = match.item.property;
     setProperty(lot);
+    onLotChange?.(lot.id);
     upsert({
       id: "resolve",
       tool: "resolve_parcel",
@@ -254,6 +263,18 @@ export function Playground({ lots, loading }: PlaygroundProps) {
     setQuery(lot.address);
     void run(lot.address);
   }
+
+  useImperativeHandle(ref, () => ({
+    runLot(propertyId: string) {
+      const lot = lots.find(({ item }) => item.property.id === propertyId)?.item.property;
+      if (!lot) return;
+      const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      document
+        .getElementById("lot-input")
+        ?.scrollIntoView({ block: "center", behavior: reduce ? "auto" : "smooth" });
+      pick(lot);
+    },
+  }));
 
   const running = phase === "running";
 
