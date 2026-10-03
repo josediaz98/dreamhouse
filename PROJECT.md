@@ -198,7 +198,8 @@ Prefer a screen recording of the deployed URL over local. Record a backup take.
 | ✅ | Lock idea, fill §0 | Jose | Sea Ranch, spec layer + buyer agent |
 | ✅ | Create GitHub repo | Jose | Done, private. **Flip to public before submitting.** Work on branch `dev` (a hook blocks edits on `main`) |
 | ⬜ | Supabase project (+ Compute alpha access) | | Ask Matt. Compute is optional for this build |
-| ⬜ | Claim credits: Claude, Vercel, Gemini, Stripe | | Check email from the hackathon address |
+| ✅ | Stripe CLI 1.53.0 installed, logged in; test-mode sandbox `acct_1TBSXZEeUE11jyNc` ("New business sandbox", josediazalen@gmail.com, US) | Jose | `livemode: false`. Keys stay in the CLI profile; never print them |
+| ⬜ | Claim credits: Claude (jose@121labs.ai org), Vercel, Gemini, Stripe | | Check email from the hackathon address |
 | ✅ | Deploy empty Next.js app on Vercel | Jose | https://dreamhouse-chi.vercel.app returns 200. Deploy with `vercel deploy --prod --yes` or merge `dev` → `main` |
 | ⬜ | Save draft on submission form | | |
 | ⬜ | Snapshot 6–8 Sea Ranch lot listings by hand (save as files) | | Century 21 Select Group page; no live scraping |
