@@ -1,0 +1,87 @@
+/*
+ * Front-owned bridge between semantic class names and brand tokens.
+ *
+ * PLACEHOLDER VALUES until the Brand lane pushes src/styles/tokens.css. When it lands,
+ * point each variable below at the brand token (for example --surface: var(--brand-surface))
+ * and delete the hex values. Components only use the semantic class names, never colours.
+ */
+:root {
+  --page: #0b0d0e;
+  --surface: #131618;
+  --surface-2: #1b1f22;
+  --line: #2a2f33;
+  --line-strong: #3c4348;
+  --fg: #ecefef;
+  --muted: #98a1a6;
+  --accent: #7fd1b0;
+  --accent-strong: #98e0c2;
+  --accent-fg: #07110d;
+  --pass: #6fcf97;
+  --fail: #ee7d77;
+  --unknown: #e3b341;
+  --pass-soft: #14291e;
+  --fail-soft: #2d1816;
+  --unknown-soft: #2b2411;
+  --focus: #98e0c2;
+}
+
+.bg-page { background-color: var(--page); }
+.bg-surface { background-color: var(--surface); }
+.bg-surface-2 { background-color: var(--surface-2); }
+.bg-accent { background-color: var(--accent); }
+.bg-pass { background-color: var(--pass); }
+.bg-fail { background-color: var(--fail); }
+.bg-unknown { background-color: var(--unknown); }
+.bg-pass-soft { background-color: var(--pass-soft); }
+.bg-fail-soft { background-color: var(--fail-soft); }
+.bg-unknown-soft { background-color: var(--unknown-soft); }
+
+.text-fg { color: var(--fg); }
+.text-muted { color: var(--muted); }
+.text-accent { color: var(--accent); }
+.text-accent-fg { color: var(--accent-fg); }
+.text-pass { color: var(--pass); }
+.text-fail { color: var(--fail); }
+.text-unknown { color: var(--unknown); }
+
+.border-line { border-color: var(--line); }
+.border-line-strong { border-color: var(--line-strong); }
+.border-accent { border-color: var(--accent); }
+.border-pass { border-color: var(--pass); }
+.border-fail { border-color: var(--fail); }
+.border-unknown { border-color: var(--unknown); }
+
+.hover-surface-2:hover { background-color: var(--surface-2); }
+.hover-accent-strong:hover { background-color: var(--accent-strong); }
+.hover-border-strong:hover { border-color: var(--line-strong); }
+
+.site-root :focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+@keyframes row-flash {
+  0% { background-color: var(--accent); color: var(--accent-fg); }
+  100% { background-color: transparent; }
+}
+.row-flash { animation: row-flash 1.6s ease-out 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .row-flash { animation: none; }
+}
+
+@keyframes question-in {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.question-in { animation: question-in 0.5s ease-out 1; }
+
+@keyframes dot-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.dot-running { animation: dot-pulse 1s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .question-in, .dot-running { animation: none; }
+}
