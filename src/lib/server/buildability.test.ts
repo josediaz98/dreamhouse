@@ -94,6 +94,12 @@ describe("checkBuildability", () => {
     expect(check(run([...without(GOOD, "flood_zone"), f("flood_zone", "AE")]), "flood").verdict).toBe("unknown");
   });
 
+  it("never emits a setback check or claims a setback pass", () => {
+    const r = run(GOOD);
+    expect(r.checks.map((c) => c.rule)).not.toContain("setbacks");
+    expect(JSON.stringify(r)).not.toMatch(/setback/i);
+  });
+
   it("is deterministic", () => {
     expect(run(GOOD)).toEqual(run(GOOD));
   });

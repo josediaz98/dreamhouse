@@ -47,6 +47,12 @@ describe("ingest", () => {
     expect(m.get("setback_front_ft")?.source?.page).toBe(28);
   });
 
+  it("labels a search-result summary as such, never as a listing page", () => {
+    const price = buildSpecFields("p1", snap, facts, NO_PARCEL, []).find((f) => f.key === "price_usd");
+    expect(price?.source?.label).toMatch(/^Search-result summary of listing, 2026-10-03/);
+    expect(price?.source?.label).not.toMatch(/^Listing page/);
+  });
+
   it("every cached facts file validates against its snapshot", () => {
     for (const name of ["35411-fly-cloud-road", "35604-timber-ridge-road", "35995-highway-1", "74-burl-tree", "38065-foothill-close", "39463-leeward-road"]) {
       const s = parseSnapshot(readFileSync(`scripts/snapshots/${name}.txt`, "utf8"));

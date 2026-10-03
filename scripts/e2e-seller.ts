@@ -12,7 +12,7 @@ const needle = process.argv[3] ?? "Leeward";
 const program = { footprintSqFt: 2155, deckSqFt: 400, heightFt: 20, stories: 2 };
 
 async function post<T>(path: string, body: unknown): Promise<T> {
-  const res = await fetch(`${base}${path}`, { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
+  const res = await fetch(`${base}${path}`, { method: "POST", headers: { "content-type": "application/json", "x-agent-id": "demo-e2e" }, body: JSON.stringify(body) });
   if (!res.ok) throw new Error(`${path} -> ${res.status} ${await res.text()}`);
   return (await res.json()) as T;
 }

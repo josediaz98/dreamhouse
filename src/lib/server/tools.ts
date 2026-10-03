@@ -41,7 +41,7 @@ export const TOOL_DESCRIPTIONS: Record<McpToolName, string> = {
     "List Sea Ranch lots with how many spec fields are known vs unknown. With `program`, each lot also carries a deterministic buildability verdict and `eliminatedCount` counts lots ruled out by a failing rule.",
   get_spec: "All spec fields of one lot, each with its source, confidence and status (known / unknown / conflict).",
   check_buildability:
-    "Per-rule pass / fail / unknown for a house program on one lot, each check with its sources. Deterministic: computed from the rules table, never by an LLM.",
+    "Per-rule pass / fail / unknown for a house program on one lot, each check with its sources. Deterministic: computed from the rules table, never by an LLM. Checks: height, lot coverage, septic, water, flood. Setbacks are NOT evaluated (no lot dimensions): never report a setback pass.",
   ask_seller: "Ask the seller to resolve an unknown field. Returns the question; the answer re-ranks the lot live.",
 };
 

@@ -185,7 +185,10 @@ export function buildSpecFields(
   resolution: Resolution,
   gis: readonly SpecField[],
 ): SpecField[] {
-  const listing: SourceRef = { type: "listing", url: snapshot.url, page: null, label: `Listing snapshot ${snapshot.capturedAt.slice(0, 10)}` };
+  const date = snapshot.capturedAt.slice(0, 10);
+  // Never call a search-result summary a listing page: the label says what the text really is.
+  const label = /^search-result summary/i.test(snapshot.kind) ? `Search-result summary of listing, ${date} (not the listing page)` : `Listing page snapshot ${date}`;
+  const listing: SourceRef = { type: "listing", url: snapshot.url, page: null, label };
   const out = new Map<SpecFieldKey, SpecField>();
   for (const key of SPEC_FIELD_KEYS) out.set(key, field(propertyId, key, null, "unknown", null, null, "Not stated in the listing or in GIS"));
 

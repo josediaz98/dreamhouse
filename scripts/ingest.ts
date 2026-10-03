@@ -18,6 +18,8 @@ import { SEA_RANCH_RULES } from "../src/lib/server/rules";
 import { runTool } from "../src/lib/server/tools";
 
 const DIR = path.join(import.meta.dirname, "snapshots");
+const FLOOD_QUESTION =
+  "FEMA maps this area as zone D (flood hazard undetermined). Is the lot inside a special flood hazard area, and is there a flood determination or elevation certificate?";
 
 async function cachedFacts(name: string): Promise<readonly ExtractedFact[] | null> {
   try {
@@ -80,6 +82,10 @@ async function main(): Promise<void> {
     const acres = fields.find((f) => f.key === "acres");
     await repo.upsertProperty({ ...placeholder, acres: acres?.status === "known" && typeof acres.value === "number" ? acres.value : null });
 
+    // FEMA zone D (undetermined) is stored as unknown; give the seller a question for it on every such lot.
+    if (fields.find((f) => f.key === "flood_zone")?.status !== "known") {
+      await repo.createQuestion({ propertyId: placeholder.id, fieldKey: "flood_zone", text: FLOOD_QUESTION });
+    }
     const unknown = fields.filter((f) => f.status !== "known").length;
     console.log(`${snap.address}: apn=${parcel?.apn ?? "unknown"} known=${fields.length - unknown}/${fields.length} (${res.note})`);
   }

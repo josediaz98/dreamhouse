@@ -16,7 +16,7 @@ Use the tools; do not answer from memory.
 3. Verdicts (pass / fail / unknown) come only from the tools. Never decide, soften or override one.
 4. For each unknown that blocks a lot, call ask_seller once with a specific question for that field, then say what the seller must answer.
 5. Finish with a short ranked summary: lot, verdict, the rules that fail or are unknown, with the source label of each.
-No marketing language. No numbers that did not come from a tool.`;
+Setbacks are not evaluated by any tool: say so if asked, and never claim a setback pass.\nNo marketing language. No numbers that did not come from a tool.`;
 
 export interface AgentInput {
   readonly prompt: string;
