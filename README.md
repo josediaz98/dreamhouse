@@ -97,3 +97,13 @@ Back-end runbook: `scripts/README.md`. Demo state and ids: `docs/lanes/back-demo
 - Sonoma County parcels (`CDR_Parcels`) for APN, zoning, fire hazard and acreage.
 - FEMA National Flood Hazard Layer.
 - Caltrans highway centerline to derive the side of Hwy 1.
+
+## The hackathon
+
+Built in one weekend at Supabase Select 2026 in San Francisco (October 2026), solo, with Claude Code running parallel lanes (back end, front end, brand) on git worktrees. Lotline did not place, but it shipped end to end: live site, MCP server, seller console and metered tool calls.
+
+<img src="docs/submission/images/hackathon-supabase-founder.jpg" alt="Jose Díaz with the Supabase founder at Supabase Select 2026" width="360">
+
+With the Supabase founder at the event.
+
+Built by [Jose Díaz](https://github.com/josediaz98).
